@@ -68,6 +68,9 @@
     background-color: #3c8545;
     color: white;
 }
+.dark-mode #suggestions {
+    color: #99f3ff;
+}
 
 .dark-mode .deletebtn {
     background-color: #8e2222;
@@ -254,6 +257,14 @@ img {
     align-content: center;
     gap:2px;
 
+}
+#suggestions {
+    color:#0a4752;
+    font-weight: bold;
+}
+#suggestionList {
+  list-style: none;
+  font-weight:bold;
 }
 
 input[type="text"], input[type="date"] {

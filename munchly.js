@@ -1,8 +1,8 @@
 
     let showAll = false;
-    let recentlyDeleted = null;  // Memorizza l'oggetto e la quantità eliminata
+    let recentlyDeleted = null;  // Memorize the deleted item and quantity
 
-    // Funzione per caricare gli oggetti
+    // Function for loading the items
     function loadObjects() {
         const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
         const today = new Date();
@@ -17,7 +17,7 @@
         savedObjects.forEach((obj) => {
             const formattedDate = formatDate(obj.expiryDate);
 
-            // Ripeti l'oggetto in base alla quantità
+            // Repeat the items based on quantity
             for (let i = 0; i < obj.quantity; i++) {
                 const tr = document.createElement('tr');
                 
@@ -30,17 +30,17 @@
                 tr.appendChild(expiryTd);
 
                 const expiryDate = new Date(obj.expiryDate);
-                // Aggiungi la classe 'red' per gli oggetti che scadono tra oggi e i prossimi 3 giorni
+                // Add class "red" for the items expiring in the next 3 days
                 if (expiryDate <= threeDaysLater && expiryDate >= today) {
                     tr.classList.add('red');
                 }
 
-                // Aggiungi la classe 'red2' per gli oggetti che scadono oggi
+                // Add class 'red2' for the items that expire today
                 if (expiryDate.toDateString() === today.toDateString()) {
                     tr.classList.add('red2');
                 }
 
-                // Se "showAll" è attivo, rimuove la classe 'hidden'
+                // If ShowAll is Active, remove calss 'hidden'
                 if (showAll) {
                     tr.classList.remove('hidden');
                 } else {
@@ -49,12 +49,12 @@
                     }
                 }
 
-                // Crea il pulsante di eliminazione
+                // Creates the delete button
                 const deleteTd = document.createElement('td');
                 const deleteBtn = document.createElement('button');
                 deleteBtn.textContent = 'Elimina';
                 deleteBtn.classList.add('deleteBtnStyle');
-                deleteBtn.onclick = () => deleteObject(obj.id); // Passiamo l'ID dell'oggetto
+                deleteBtn.onclick = () => deleteObject(obj.id); // ID of the Item
                 deleteTd.appendChild(deleteBtn);
                 tr.appendChild(deleteTd);
 
@@ -62,16 +62,19 @@
             }
         });
 
-        // Mostra il pulsante per ripristinare l'oggetto eliminato se esiste
+        // Shows the button to restore the deleted items if existing
         const undoDiv = document.getElementById('undoDiv');
         if (recentlyDeleted) {
             undoDiv.style.display = 'block';
         } else {
             undoDiv.style.display = 'none';
         }
+
+        // Loads suggestions
+        loadSuggestions();
     }
 
-    // Funzione per aggiungere oggetti
+    // Function to add items
     function addObject() {
         const name = document.getElementById('objectName').value;
         const expiryDate = document.getElementById('expiryDate').value;
@@ -84,7 +87,7 @@
 
         const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
 
-        // Genera un ID univoco per ogni oggetto
+        // Generates an unique ID for each items
         const newObject = {
             id: Date.now(),
             name,
@@ -102,61 +105,158 @@
         loadObjects();
     }
 
-    // Funzione per formattare la data
+    // Function to format data
     function formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleDateString('it-IT');
     }
 
-    // Funzione per eliminare un oggetto
+    // Function for deleting items.
     function deleteObject(id) {
         const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
 
-        // Trova l'oggetto da eliminare
+        //Finds an item to delete
         const objectToDelete = savedObjects.find(obj => obj.id === id);
         if (objectToDelete && objectToDelete.quantity > 1) {
-            // Memorizziamo l'oggetto eliminato e la quantità modificata
-            recentlyDeleted = { ...objectToDelete, quantity: 1 }; // Salviamo l'oggetto da ripristinare (con quantità 1)
+            // Memorize the deleted item and quantity
+            recentlyDeleted = { ...objectToDelete, quantity: 1 }; // Saves the item to restore with quantity (with quantity 1)
             
-            // Diminuiamo la quantità di 1
+            // Reduce quantity to 1
             objectToDelete.quantity -= 1;
 
-            // Salviamo l'array aggiornato
+            //  Save the updated array
             localStorage.setItem('objects', JSON.stringify(savedObjects));
             loadObjects();
         } else if (objectToDelete) {
-            // Se la quantità è 1, rimuoviamo completamente l'oggetto
-            recentlyDeleted = objectToDelete; // Salviamo l'oggetto da ripristinare
+            // If quantity is 1, removes the item
+            recentlyDeleted = objectToDelete; // Saves the item to restore
             const updatedObjects = savedObjects.filter(obj => obj.id !== id);
             localStorage.setItem('objects', JSON.stringify(updatedObjects));
             loadObjects();
         }
     }
 
-    // Funzione per ripristinare l'oggetto eliminato
+    // Function to restore deleted item
     function restoreDeletedObject() {
         if (recentlyDeleted) {
             const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
 
-            // Se è stato eliminato un oggetto con quantità > 1, ripristiniamo la quantità
+            // If an item with quantity > 1 is deleted, the item with that quantity is restored
             const objectToRestore = savedObjects.find(obj => obj.id === recentlyDeleted.id);
             if (objectToRestore) {
                 objectToRestore.quantity += recentlyDeleted.quantity; // Ripristina la quantità eliminata
             } else {
-                // Se non esiste, aggiungiamo l'oggetto con la quantità originaria
+                // If it doesn't exist, adds the item with its original quantity
                 savedObjects.push(recentlyDeleted);
             }
 
-            // Salviamo l'array aggiornato
+            // Saves the updated array
             localStorage.setItem('objects', JSON.stringify(savedObjects));
 
-            recentlyDeleted = null; // Reset della variabile
+            recentlyDeleted = null; // Reset of the variable
 
             loadObjects();
         }
     }
 
-    // Funzione per cercare oggetti
+    // Function to add item to the list "To Buy"
+    function addBuyItem() {
+        const buyItemName = document.getElementById('buyItemName').value;
+
+        if (!buyItemName) {
+            alert("Inserisci il nome dell'oggetto da acquistare.");
+            return;
+        }
+
+        const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
+        savedBuyItems.push(buyItemName);
+
+        localStorage.setItem('buyItems', JSON.stringify(savedBuyItems));
+
+        document.getElementById('buyItemName').value = '';
+
+        loadBuyItems();
+    }
+
+    // Function for loading "to Buy" items
+    function loadBuyItems() {
+        const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
+        const buyItemList = document.getElementById('buyItemList');
+        buyItemList.innerHTML = '';
+
+        savedBuyItems.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            const nameTd = document.createElement('td');
+            nameTd.textContent = item;
+            tr.appendChild(nameTd);
+
+            const deleteTd = document.createElement('td');
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Elimina';
+            deleteBtn.classList.add('deleteBtnStyle');
+            deleteBtn.onclick = () => deleteBuyItem(index);
+            deleteTd.appendChild(deleteBtn);
+            tr.appendChild(deleteTd);
+
+            buyItemList.appendChild(tr);
+        });
+    }
+
+    // Function to delete items on the list "to buy"
+    function deleteBuyItem(index) {
+        const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
+        savedBuyItems.splice(index, 1);
+        localStorage.setItem('buyItems', JSON.stringify(savedBuyItems));
+
+        loadBuyItems();
+    }
+
+   // Function to load suggestions
+function loadSuggestions() {
+    const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
+    const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
+    const suggestionList = document.getElementById('suggestionList');
+    suggestionList.innerHTML = ''; // Clears the suggestion list before loading it
+
+    // Creates a set to avoid duplicates
+    const suggestedItems = new Set();
+
+    savedObjects.forEach((object) => {
+        // Verify that the items isn't already added or suggested 
+        if (!savedBuyItems.includes(object.name) && !suggestedItems.has(object.name)) {
+            const li = document.createElement('li');
+            li.textContent = `${object.name}`;
+
+            // Creates the button to add an item on the list
+            const addBtn = document.createElement('button');
+            addBtn.textContent = 'Aggiungi';
+            addBtn.onclick = () => addBuyItemFromSuggestion(object.name);
+
+            li.appendChild(addBtn);
+            suggestionList.appendChild(li);
+
+            // Adds the item in the set to avoid duplicates
+            suggestedItems.add(object.name);
+        }
+    });
+}
+
+
+    // Function to add a suggested item on the list "to buy"
+    function addBuyItemFromSuggestion(itemName) {
+        const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
+
+        // Adds the item on the list if it isn't already existing
+        if (!savedBuyItems.includes(itemName)) {
+            savedBuyItems.push(itemName);
+            localStorage.setItem('buyItems', JSON.stringify(savedBuyItems));
+        }
+
+        loadBuyItems();
+        loadSuggestions(); // Refrest the suggestion list
+    }
+
+    // Function for searching the items
     function searchObjects() {
         const query = document.getElementById('searchBar').value.toLowerCase();
         const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
@@ -191,94 +291,42 @@
         });
     }
 
-    // Funzione per attivare/disattivare la visualizzazione di tutti gli oggetti
+    // Function to toggle visibility to all the items
     function toggleShowAll() {
         showAll = !showAll;
         loadObjects();
     }
 
-    // Funzione per aggiungere un oggetto alla lista degli acquisti
-    function addBuyItem() {
-        const buyItemName = document.getElementById('buyItemName').value;
-
-        if (!buyItemName) {
-            alert("Inserisci il nome dell'oggetto da acquistare.");
-            return;
-        }
-
-        const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
-        savedBuyItems.push(buyItemName);
-
-        localStorage.setItem('buyItems', JSON.stringify(savedBuyItems));
-
-        document.getElementById('buyItemName').value = '';
-
-        loadBuyItems();
-    }
-
-    // Funzione per caricare gli articoli da comprare
-    function loadBuyItems() {
-        const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
-        const buyItemList = document.getElementById('buyItemList');
-        buyItemList.innerHTML = '';
-
-        savedBuyItems.forEach((item, index) => {
-            const tr = document.createElement('tr');
-            const nameTd = document.createElement('td');
-            nameTd.textContent = item;
-            tr.appendChild(nameTd);
-
-            const deleteTd = document.createElement('td');
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'Elimina';
-            deleteBtn.classList.add('deleteBtnStyle');
-            deleteBtn.onclick = () => deleteBuyItem(index);
-            deleteTd.appendChild(deleteBtn);
-            tr.appendChild(deleteTd);
-
-            buyItemList.appendChild(tr);
-        });
-    }
-
-    // Funzione per eliminare un oggetto dalla lista degli acquisti
-    function deleteBuyItem(index) {
-        const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
-        savedBuyItems.splice(index, 1);
-        localStorage.setItem('buyItems', JSON.stringify(savedBuyItems));
-
-        loadBuyItems();
-    }
-
-    // Carica oggetti e articoli da acquistare all'avvio della pagina
+    // Loads items and to buy items as the page opens
     loadObjects();
     loadBuyItems();
 
 //Color Picker
-    // Funzione per applicare i colori scelti
+    // Function to apply selected colors
 function applyColors() {
     const backgroundColor = document.getElementById('background-color').value;
     const textColor = document.getElementById('text-color').value;
 
-    // Cambia il colore di sfondo di header e th
+    // Change color of background, header and th
     document.querySelector('header').style.backgroundColor = backgroundColor;
     const thElements = document.querySelectorAll('th');
     thElements.forEach(th => {
         th.style.backgroundColor = backgroundColor;
     });
 
-    // Cambia il colore del testo di th e titolo
+    // Change color of text di th e titles
     thElements.forEach(th => {
         th.style.color = textColor;
     });
     document.querySelector('.title').style.color = textColor;
 }
 
-// Funzione per resettare i colori ai valori di default
+// Function to reset color to default
 function resetColors() {
     document.getElementById('background-color').value = "#5bb1c2";
     document.getElementById('text-color').value = "#ffffff";
 
-    // Ripristina i colori predefiniti nell'elemento header e th
+    // Set color to default (header and th)
     document.querySelector('header').style.backgroundColor = "#5bb1c2";
     const thElements = document.querySelectorAll('th');
     thElements.forEach(th => {
@@ -286,15 +334,15 @@ function resetColors() {
         th.style.color = "#ffffff";
     });
 
-    // Ripristina il colore del titolo
+    // Set titles color to default
     document.querySelector('.title').style.color = "#ffffff";
 }
 
-// Aggiungi event listeners ai color picker per applicare i cambiamenti
+// Add an event listeners to the color picker to apply changes
 document.getElementById('background-color').addEventListener('input', applyColors);
 document.getElementById('text-color').addEventListener('input', applyColors);
 
-// Aggiungi event listener al bottone di reset
+// Add an event listener to reset button
 document.getElementById('reset-btn').addEventListener('click', resetColors);
 
   document.getElementById('darkmode-toggle').addEventListener('change', function() {
@@ -307,10 +355,10 @@ document.getElementById('reset-btn').addEventListener('click', resetColors);
 
 document.getElementById('show').addEventListener('click', function() {
     const customBox = document.getElementById('customBox');
-    // Alterna la visibilità di #customBox tra 'block' e 'none'
+    // Alternate visibility of #customBox to 'block' and 'none'
     if (customBox.style.display === 'none' || customBox.style.display === '') {
-        customBox.style.display = 'block'; // Mostra il box
+        customBox.style.display = 'block'; // Shows the box
     } else {
-        customBox.style.display = 'none'; // Nasconde il box
+        customBox.style.display = 'none'; // Hides the box
     }
 });
