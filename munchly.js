@@ -212,33 +212,103 @@
     }
 
    // Function to load suggestions
-function loadSuggestions() {
+   function loadSuggestions() {
     const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
     const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
     const suggestionList = document.getElementById('suggestionList');
     suggestionList.innerHTML = ''; // Clears the suggestion list before loading it
 
+    // List of default suggestions when no items are in the lists
+    const defaultSuggestions = [
+        'Olio d\'oliva', 'Pomodorini', 'Insalata', 'Farina', 'Lattuga', 'Aglio', 'Formaggio', 'Latte', 'Pasta', 'Carne', 
+        'Dentifricio', 'Tovaglioli', 'Spazzola', 'Carta igienica', 'Detergente', 'Shampoo', 'Sapone', 'Sacca per il lavaggio'
+    ];
+
+    // If no items in savedObjects and savedBuyItems, suggest the default suggestions
+    if (savedObjects.length === 0 && savedBuyItems.length === 0) {
+        defaultSuggestions.forEach(itemName => {
+            if (!savedBuyItems.includes(itemName)) {
+                const li = document.createElement('li');
+                li.textContent = itemName;
+
+                const addBtn = document.createElement('button');
+                addBtn.textContent = 'Aggiungi';
+                addBtn.onclick = () => addBuyItemFromSuggestion(itemName);
+
+                li.appendChild(addBtn);
+                suggestionList.appendChild(li);
+            }
+        });
+        return; // Exit the function once default suggestions are shown
+    }
+
     // Creates a set to avoid duplicates
     const suggestedItems = new Set();
 
-    savedObjects.forEach((object) => {
-        // Verify that the items isn't already added or suggested 
-        if (!savedBuyItems.includes(object.name) && !suggestedItems.has(object.name)) {
-            const li = document.createElement('li');
-            li.textContent = `${object.name}`;
+    // Create a frequency map to track how often each item appears in all categories (food and non-food)
+    const frequencyMap = savedObjects.reduce((acc, obj) => {
+        if (!acc[obj.name]) {
+            acc[obj.name] = 0;
+        }
+        acc[obj.name] += obj.quantity; // Add the quantity to the frequency count
+        return acc;
+    }, {});
 
-            // Creates the button to add an item on the list
+    // Sort the items based on frequency (most frequent first)
+    const sortedItems = Object.keys(frequencyMap).sort((a, b) => frequencyMap[b] - frequencyMap[a]);
+
+    // Suggest items based on frequency, avoiding already bought or suggested items
+    let suggestionCount = 0;
+    sortedItems.forEach((itemName) => {
+        if (suggestionCount >= 7) return; // Limit to 7 suggestions
+
+        // Verify that the item isn't already added or suggested
+        if (!savedBuyItems.includes(itemName) && !suggestedItems.has(itemName)) {
+            const li = document.createElement('li');
+            li.textContent = itemName;
+
+            // Creates the button to add an item to the list
             const addBtn = document.createElement('button');
-            addBtn.textContent = 'Aggiungi';
-            addBtn.onclick = () => addBuyItemFromSuggestion(object.name);
+            addBtn.textContent = 'Add';
+            addBtn.onclick = () => {
+                addBuyItemFromSuggestion(itemName); // Add item to the buy list
+                loadSuggestions(); // Refresh the suggestions list after adding the item
+            };
 
             li.appendChild(addBtn);
             suggestionList.appendChild(li);
 
-            // Adds the item in the set to avoid duplicates
-            suggestedItems.add(object.name);
+            // Add the item to the set to avoid duplicates in suggestions
+            suggestedItems.add(itemName);
+            suggestionCount++;
         }
     });
+
+    // If there are not enough suggestions based on frequency, fill the gap with default suggestions
+    if (suggestionCount < 7) {  // If less than 7 suggestions were added
+        defaultSuggestions.forEach(itemName => {
+            if (suggestionCount >= 7) return; // Stop once 7 suggestions are reached
+
+            if (!savedBuyItems.includes(itemName) && !suggestedItems.has(itemName)) {
+                const li = document.createElement('li');
+                li.textContent = itemName;
+
+                const addBtn = document.createElement('button');
+                addBtn.textContent = 'Aggiungi';
+                addBtn.onclick = () => {
+                    addBuyItemFromSuggestion(itemName); // Add item to the buy list
+                    loadSuggestions(); // Refresh the suggestions list after adding the item
+                };
+
+                li.appendChild(addBtn);
+                suggestionList.appendChild(li);
+
+                // Add the item to the set to avoid duplicates in suggestions
+                suggestedItems.add(itemName);
+                suggestionCount++;
+            }
+        });
+    }
 }
 
 

@@ -21,6 +21,7 @@
         right:50px;
         top: 10px;
         display:none;
+
     }
 .custom-box {
     display:flex;
@@ -284,7 +285,7 @@ input[type="text"], input[type="date"] {
     margin: 3px;
     padding: 8px;
     font-size: 1rem;
-    width:10px;
+    width:25px;
 }
 
 .btns {
