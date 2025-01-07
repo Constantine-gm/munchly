@@ -99,6 +99,21 @@
 </div>
 </div>
 
+<script>
+document.getElementById('show').addEventListener('click', function() {
+    const customBox = document.getElementById('customBox');
+    
+    // Controlla la visibilità dell'elemento con getComputedStyle
+    const currentDisplay = window.getComputedStyle(customBox).display;
+    
+    if (currentDisplay === 'none') {
+        customBox.style.display = 'block'; // Mostra la finestra
+    } else {
+        customBox.style.display = 'none'; // Nascondi la finestra
+    }
+});
+
+</script>
 
 </body>
 </html>

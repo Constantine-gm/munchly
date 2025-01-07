@@ -422,13 +422,16 @@ document.getElementById('reset-btn').addEventListener('click', resetColors);
         document.body.classList.remove('dark-mode');
     }
 });
-
 document.getElementById('show').addEventListener('click', function() {
     const customBox = document.getElementById('customBox');
-    // Alternate visibility of #customBox to 'block' and 'none'
-    if (customBox.style.display === 'none' || customBox.style.display === '') {
-        customBox.style.display = 'block'; // Shows the box
+    
+    // Controlla la visibilità dell'elemento con getComputedStyle
+    const currentDisplay = window.getComputedStyle(customBox).display;
+    
+    if (currentDisplay === 'none') {
+        customBox.style.display = 'block'; // Mostra la finestra
     } else {
-        customBox.style.display = 'none'; // Hides the box
+        customBox.style.display = 'none'; // Nascondi la finestra
     }
 });
+
