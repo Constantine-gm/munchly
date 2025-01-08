@@ -12,17 +12,58 @@
     font-size: 25px;
   }
 
+    /* Sidebar Styles */
     #customBox {
-        background: rgba(173, 216, 230, 0.427);
-        border-radius:3px;
-        width:170px;
-        height:150px;
-        position: absolute;
-        right:50px;
-        top: 10px;
-        display:none;
-
+        position: fixed;
+        top: 0; 
+        right:-300px; /* Initially hide on the right */
+        width: 250px;
+        height: 100%;
+        background-color: #333;
+        color: white;
+        transition: right 0.3s ease-in-out; /* Smooth transition */
+        padding: 20px;
     }
+
+    #customBox.active {
+        right: 0; /* Move to the right when active */
+    }
+
+    #customBox .custom-box {
+        margin-bottom: 7px;
+    }
+
+    #customBox .color-picker-container {
+        margin-top:25px;
+        width: 180px;
+    }
+    .p1 {
+text-align: left;
+color: #99f3ff;
+margin-top: 30px;
+text-transform: uppercase;
+margin-bottom: 0;
+    }
+.p2 {
+text-align: left;
+color: #99f3ff;
+margin-top: 0;
+text-transform: uppercase;
+margin-bottom: 2px; 
+}
+    /* Sidebar Button */
+    #show {
+        font-size: 30px;
+        color: #bbe7ff;
+        background-color: none;
+        border: none;
+        cursor: pointer;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
 .custom-box {
     display:flex;
     margin-bottom:4px;
@@ -83,7 +124,7 @@
     color: white;
 }
 
-.dark-mode input[type="text"], .dark-mode input[type="date"]{
+.dark-mode input[type="text"], .dark-mode input[type="date"], .dark-mode #quantity {
     background-color: #727272b8;
     color: rgb(150, 250, 255);
     border: 1px solid #555;
@@ -142,15 +183,16 @@ cursor: pointer;
     text-align: left;
     position: absolute;
     width: 150px;
-    background-color:lightblue;
+    background-color:rgb(118, 126, 129);
     margin: 0px 5px;
     border-radius: 5px;
     padding: 4px;
    border:1px solid teal;
+
 }
 
 .titolocp {
-color:#0a4752;
+color:#b0f3ff;
 font-weight: bold;
 
 }
@@ -163,7 +205,7 @@ padding:5px;
 .color-picker-container label {
     font-size: 0.8rem;
     font-weight: bold;
-    color: #0a4752;
+    color: #b0f3ff;
 }
 
 .color-picker-container input {
@@ -187,6 +229,7 @@ img {
     width:50px;
     transform: translate(0%, 20%);
     animation: floatUpDown 1.5s ease-in-out infinite;
+    cursor: pointer;
 }
  /* Floating animation */
  @keyframes floatUpDown {
@@ -197,13 +240,12 @@ img {
    }
 
    header {
-    background-color: #5bb1c2;  /* Colore di sfondo */
-    height:170px;  /* Altezze 100% della finestra per centrare verticalmente */
-    display: flex;  /* Usa flexbox per centrare gli elementi */
-    justify-content: center;  /* Centra orizzontalmente */
-
+    background-color: #5bb1c2;  
+    height:170px; 
+    display: flex; 
+    justify-content: center; 
 }
-/* Titolo */
+/* Main Contents */
 .title {
     font-family: "Sulphur Point", sans-serif;
     font-size: 3rem;
@@ -266,6 +308,7 @@ img {
 #suggestionList {
   list-style: none;
   font-weight:bold;
+  font-size:18px;
 }
 
 input[type="text"], input[type="date"] {
@@ -398,7 +441,7 @@ tr {
     border-bottom: 1px solid lightblue;
 }
 
-/* Larghezza specifica per la colonna "Elimina" */
+/* Specific Width for the column "Delete" */
 #buyItemTable td:last-child,
 #buyItemTable th:last-child {
     width: 85px;
@@ -430,12 +473,54 @@ tr {
         display:none;
 
     }
+    /* Sidebar Styles */
     #customBox {
-        right:4px;
-        top:50px;
-        width:95px;
-        height:55px;
-        border-radius: 10px;
+        position: fixed;
+        top: 0; 
+        right:-300px; /* Initially hide on the right */
+        width: 95px;
+        height: 100%;
+        background-color: #333;
+        color: white;
+        transition: right 0.3s ease-in-out; /* Smooth transition */
+        padding: 20px;
+        z-index: 400;
+    }
+
+    #customBox.active {
+        right: 0; /* Move to the right when active */
+    }
+
+    #customBox .custom-box {
+        margin-bottom: 2px;
+        margin-top:1px;
+    }
+
+    #customBox .color-picker-container {
+        width: 180px;
+    }
+
+    /* Sidebar Button */
+    #show {
+        font-size: 20px;
+        color: #bbe7ff;
+        background-color: none;
+        border: none;
+        cursor: pointer;
+        position: fixed;
+        top: 5px;
+        right: 5px;
+        z-index: 1000;
+    }
+    .p1 {
+color: #c4f8ff;
+margin-top: 45px;
+font-weight: bold;
+text-transform: uppercase;
+margin-bottom: 2px; 
+    }
+    .p2 {
+        display:none;
     }
   #dmlabel {
 right:3px;
@@ -451,6 +536,7 @@ right:3px;
         font-size: 0.9rem;
         width: 25%;
     }
+
 
     button {
         width: 100px;

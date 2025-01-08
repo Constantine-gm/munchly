@@ -1,4 +1,4 @@
-
+    
     let showAll = false;
     let recentlyDeleted = null;  // Memorize the deleted item and quantity
 
@@ -269,7 +269,7 @@
 
             // Creates the button to add an item to the list
             const addBtn = document.createElement('button');
-            addBtn.textContent = 'Add';
+            addBtn.textContent = 'Aggiungi';
             addBtn.onclick = () => {
                 addBuyItemFromSuggestion(itemName); // Add item to the buy list
                 loadSuggestions(); // Refresh the suggestions list after adding the item
@@ -422,16 +422,9 @@ document.getElementById('reset-btn').addEventListener('click', resetColors);
         document.body.classList.remove('dark-mode');
     }
 });
-document.getElementById('show').addEventListener('click', function() {
-    const customBox = document.getElementById('customBox');
-    
-    // Controlla la visibilità dell'elemento con getComputedStyle
-    const currentDisplay = window.getComputedStyle(customBox).display;
-    
-    if (currentDisplay === 'none') {
-        customBox.style.display = 'block'; // Mostra la finestra
-    } else {
-        customBox.style.display = 'none'; // Nascondi la finestra
-    }
-});
 
+ // JavaScript to toggle the sidebar
+ document.getElementById("show").addEventListener("click", function() {
+    var customBox = document.getElementById("customBox");
+    customBox.classList.toggle("active");
+});
