@@ -52,7 +52,7 @@
                 // Creates the delete button
                 const deleteTd = document.createElement('td');
                 const deleteBtn = document.createElement('button');
-                deleteBtn.textContent = 'Elimina';
+                deleteBtn.textContent = 'Delete';
                 deleteBtn.classList.add('deleteBtnStyle');
                 deleteBtn.onclick = () => deleteObject(obj.id); // ID of the Item
                 deleteTd.appendChild(deleteBtn);
@@ -81,7 +81,7 @@
         const quantity = parseInt(document.getElementById('quantity').value) || 1;
 
         if (!name || !expiryDate) {
-            alert("Inserisci sia il nome che la data di scadenza.");
+            alert("Insert item name and expiry date.");
             return;
         }
 
@@ -164,7 +164,7 @@
         const buyItemName = document.getElementById('buyItemName').value;
 
         if (!buyItemName) {
-            alert("Inserisci il nome dell'oggetto da acquistare.");
+            alert("Insert name of the item to buy");
             return;
         }
 
@@ -192,7 +192,7 @@
 
             const deleteTd = document.createElement('td');
             const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'Elimina';
+            deleteBtn.textContent = 'Delete';
             deleteBtn.classList.add('deleteBtnStyle');
             deleteBtn.onclick = () => deleteBuyItem(index);
             deleteTd.appendChild(deleteBtn);
@@ -232,7 +232,7 @@
                 li.textContent = itemName;
 
                 const addBtn = document.createElement('button');
-                addBtn.textContent = 'Aggiungi';
+                addBtn.textContent = 'Add';
                 addBtn.onclick = () => addBuyItemFromSuggestion(itemName);
 
                 li.appendChild(addBtn);
@@ -269,7 +269,7 @@
 
             // Creates the button to add an item to the list
             const addBtn = document.createElement('button');
-            addBtn.textContent = 'Aggiungi';
+            addBtn.textContent = 'Add';
             addBtn.onclick = () => {
                 addBuyItemFromSuggestion(itemName); // Add item to the buy list
                 loadSuggestions(); // Refresh the suggestions list after adding the item
@@ -349,7 +349,7 @@
 
                     const deleteTd = document.createElement('td');
                     const deleteBtn = document.createElement('button');
-                    deleteBtn.textContent = 'Elimina';
+                    deleteBtn.textContent = 'Delete';
                     deleteBtn.classList.add('deleteBtnStyle');
                     deleteBtn.onclick = () => deleteObject(obj.id);
                     deleteTd.appendChild(deleteBtn);
