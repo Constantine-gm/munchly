@@ -58,7 +58,7 @@ margin-bottom: 2px;
         background-color: none;
         border: none;
         cursor: pointer;
-        position: fixed;
+        position: absolute;
         top: 20px;
         right: 20px;
         z-index: 1000;

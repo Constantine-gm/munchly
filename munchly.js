@@ -294,7 +294,7 @@
                 li.textContent = itemName;
 
                 const addBtn = document.createElement('button');
-                addBtn.textContent = 'Aggiungi';
+                addBtn.textContent = 'Add';
                 addBtn.onclick = () => {
                     addBuyItemFromSuggestion(itemName); // Add item to the buy list
                     loadSuggestions(); // Refresh the suggestions list after adding the item
