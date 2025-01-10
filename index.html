@@ -16,10 +16,14 @@
 <style></style>
 </head>
 <header>
-    <button id="show"><i class="fa-solid fa-gear"></i></button>
+<button id="show"><i class="fa-solid fa-gear"></i></button>
     <div id="customBox">
+        <div class="custom-box">
+            <button id="change-lang-button"><img id="language-icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg/1200px-Flag_of_the_United_Kingdom_%283-5%29.svg.png" alt="English Flag">
+            </button>
+        </div>
         <!-- Dark Mode -->
-        <p class="p1">Dark Mode</p>
+        <p class="p1" data-translate-key="Dark Mode">Dark Mode</p>
          <div class="custom-box" id="box1">
          <div id="darkmod">
         <input class="dm" type="checkbox" id="darkmode-toggle"/>
@@ -28,18 +32,17 @@
     </div>
         <div class="custom-box">
         <!-- Color Picker -->
-        <p class="p2">Color Picker</p>
+        <p class="p2" data-translate-key="Color Picker">Color Picker</p>
     <div class="color-picker-container" id="color-picker-container" style="width:180px">
-        <div class="titolocp">Change Color</div>
-            
-              <label for="background-color">Background:</label>
+        <div class="titolocp" data-translate-key="Change Color">Change Color</div>
+              <label for="background-color" data-translate-key="Background">Background:</label>
             <input type="color" id="background-color" name="background-color" value="#5bb1c2">
         
-                <label for="text-color">Text:</label>
+                <label for="text-color" data-translate-key="Text:">Text:</label>
             <input type="color" id="text-color" name="text-color" value="#ffffff">
         
           <!-- Reset Button -->
-          <button id="reset-btn" class="reset-btn">Reset Colors</button>
+          <button id="reset-btn" class="reset-btn" data-translate-key="Reset Colors">Reset Colors</button>
     </div>
     </div>
     </div>
@@ -55,7 +58,7 @@
     <input type="text" id="objectName" placeholder="Item Name" />
     <input type="date" id="expiryDate" />
     <input type="number" id="quantity" value="1" min="1">
-    <button onclick="addObject()">Add</button>
+    <button onclick="addObject()" data-translate-key="Add">Add</button>
 </div>
 
     <div class="line"></div>
@@ -63,17 +66,17 @@
 
 <div class="box">
     <div class="b1">
-    <div class="title2">Expiry List</div>
+    <div class="title2" data-translate-key="Expiry List">Expiry List</div>
     <div class="btns">
-    <button class="mostrabtn" onclick="toggleShowAll()">Show All</button>
+    <button class="mostrabtn" onclick="toggleShowAll()" data-translate-key="Show All">Show All</button>
     <button id="undoDiv" style="display:none; width:50px; background:red;" onclick="restoreDeletedObject()"><i class="fa-solid fa-arrow-rotate-left"></i></button>
 </div>
     <table id="objectTable">
         <thead>
             <tr>
-                <th>Product</th>
-                <th>Expiry</th>
-                <th>Delete</th>
+                <th data-translate-key="Product">Product</th>
+                <th data-translate-key="Expiry">Expiry</th>
+                <th data-translate-key="Delete">Delete</th>
             </tr>
         </thead>
         
@@ -81,24 +84,24 @@
     </table>
 </div>
 <div class="b1">
-    <h2 class="title3">To Buy List</h2>
-    <input class="buy" type="text" id="buyItemName" placeholder="Insert Items"/>
+    <h2 class="title3" data-translate-key="To Buy List">To Buy List</h2>
+    <input class="buy" type="text" id="buyItemName" placeholder="Insert Items" data-translate-key="Insert Items"/>
     <button onclick="addBuyItem()">Add</button>
 
     <table id="buyItemTable">
         <thead>
             <tr>
-                <th>Product</th>
-                <th>Delete</th>
+                <th data-translate-key="Product">Product</th>
+                <th data-translate-key="Delete">Delete</th>
             </tr>
         </thead>
         <tbody id="buyItemList"></tbody>
     </table>
     <div id="suggestions">
-        <h2>Suggestions</h2>
-        <ul id="suggestionList"></ul>
+        <h2 data-translate-key="Suggestions">Suggestions</h2>
+        <ul id="suggestionList">
+        </ul>
     </div>
-</div>
 </div>
 <script src="munchly.js"></script>
 </body>

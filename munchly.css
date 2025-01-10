@@ -1,4 +1,4 @@
- #show {
+     #show {
     font-size: 19px;
     background:transparent;
     width:50px;
@@ -11,67 +11,93 @@
   #show:hover {
     font-size: 25px;
   }
-
-    /* Sidebar Styles */
-    #customBox {
-        position: fixed;
-        top: 0; 
-        right:-300px; /* Initially hide on the right */
-        width: 250px;
-        height: 100%;
-        background-color: #333;
-        color: white;
-        transition: right 0.3s ease-in-out; /* Smooth transition */
-        padding: 20px;
-    }
-
-    #customBox.active {
-        right: 0; /* Move to the right when active */
-    }
-
-    #customBox .custom-box {
-        margin-bottom: 7px;
-    }
-
-    #customBox .color-picker-container {
-        margin-top:25px;
-        width: 180px;
-    }
-    .p1 {
-text-align: left;
-color: #99f3ff;
-margin-top: 30px;
-text-transform: uppercase;
-margin-bottom: 0;
-    }
-.p2 {
-text-align: left;
-color: #99f3ff;
-margin-top: 0;
-text-transform: uppercase;
-margin-bottom: 2px; 
+  #language-icon {
+    width: 30px;
+    height: 20px;
+    border-radius: 3px;
 }
-    /* Sidebar Button */
-    #show {
-        font-size: 30px;
-        color: #bbe7ff;
-        background-color: none;
-        border: none;
-        cursor: pointer;
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        z-index: 1000;
-    }
+#language-icon:hover {
+    width: 35px;
+    height: 25px;
+}
+
+/* Sidebar Styles */
+#customBox {
+    position: fixed;
+    top: 0;
+    right: -300px; /* Initially hide on the right */
+    width: 250px;
+    height: 100%;
+    background-color: #333;
+    color: white;
+    transition: right 0.3s ease-in-out; /* Smooth transition */
+    padding: 15px;
+}
+
+#customBox.active {
+    right: 0; /* Move to the right when active */
+}
+
+#customBox .custom-box {
+    display: flex;
+    flex-direction: column;
+    margin-top:3px;
+    margin-bottom: 3px;
+}
+
+#customBox .color-picker-container {
+    margin-top: 25px;
+    width: 180px;
+}
+
+.p1 {
+    text-align: left;
+    color: #99f3ff;
+    margin-top: 15px;
+    text-transform: uppercase;
+    margin-bottom: 0;
+}
+
+.p2 {
+    text-align: left;
+    color: #99f3ff;
+    margin-top: 0;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+/* Sidebar Button */
+#show {
+    font-size: 30px;
+    color: #bbe7ff;
+    background-color: none;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Reduce the space between the Change Language and Dark Mode sections */
+#customBox .custom-box:first-of-type {
+    margin-bottom: 0; /* Remove the space below the language icon */
+}
+
+#customBox .custom-box:last-of-type {
+    margin-top: 0; /* Remove the space above the dark mode section */
+}
 
 .custom-box {
-    display:flex;
-    margin-bottom:4px;
+    display: flex;
+    margin-bottom: 3px; /* Space between each custom-box */
 }
+
 .dark-mode {
     background-color: #3a3d45;
     color: white;
 }
+
 
 .dark-mode header {
     background-color: rgb(52, 122, 132);
@@ -225,7 +251,7 @@ padding:5px;
     padding: 0;
     box-sizing: border-box;
 }
-img {
+img:not(#language-icon) {
     width:50px;
     transform: translate(0%, 20%);
     animation: floatUpDown 1.5s ease-in-out infinite;
@@ -349,10 +375,14 @@ button {
     width: 120px;
     max-width: 250px;
 }
-button:hover:not(#show) {
+button:hover:not(#show, #change-lang-button) {
             box-shadow: 0px 2px 4px rgba(132, 132, 132, 0.7);
         }
-
+#change-lang-button {
+    width:50px;
+    background: none;
+    padding:3px;
+}
 .mostrabtn {
 
     background: orange;
@@ -452,6 +482,7 @@ tr {
 
 
 
+
 /* Media Query for mobiles - 480px */
 @media (max-width: 480px) {
    #show {
@@ -514,10 +545,10 @@ tr {
     }
     .p1 {
 color: #c4f8ff;
-margin-top: 45px;
+margin-top: 15px;
 font-weight: bold;
 text-transform: uppercase;
-margin-bottom: 2px; 
+margin-bottom: 1px; 
     }
     .p2 {
         display:none;

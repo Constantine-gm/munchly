@@ -1,5 +1,17 @@
-    
-    let showAll = false;
+     // JavaScript to toggle the sidebar
+ document.getElementById("show").addEventListener("click", function() {
+    var customBox = document.getElementById("customBox");
+    customBox.classList.toggle("active");
+});
+
+function updateDeleteButtons() {
+    const deleteButtons = document.querySelectorAll('.deleteBtnStyle');
+    deleteButtons.forEach(button => {
+        button.textContent = translations[currentLanguage]["Delete"];
+    });
+}
+        
+        let showAll = false;
     let recentlyDeleted = null;  // Memorize the deleted item and quantity
 
     // Function for loading the items
@@ -52,13 +64,14 @@
                 // Creates the delete button
                 const deleteTd = document.createElement('td');
                 const deleteBtn = document.createElement('button');
-                deleteBtn.textContent = 'Delete';
+                deleteBtn.textContent = translations[currentLanguage]["Delete"];
                 deleteBtn.classList.add('deleteBtnStyle');
                 deleteBtn.onclick = () => deleteObject(obj.id); // ID of the Item
                 deleteTd.appendChild(deleteBtn);
                 tr.appendChild(deleteTd);
 
                 objectList.appendChild(tr);
+                
             }
         });
 
@@ -72,6 +85,7 @@
 
         // Loads suggestions
         loadSuggestions();
+        updateDeleteButtons();
     }
 
     // Function to add items
@@ -192,7 +206,7 @@
 
             const deleteTd = document.createElement('td');
             const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'Delete';
+            deleteBtn.textContent = translations[currentLanguage]["Delete"];
             deleteBtn.classList.add('deleteBtnStyle');
             deleteBtn.onclick = () => deleteBuyItem(index);
             deleteTd.appendChild(deleteBtn);
@@ -211,120 +225,214 @@
         loadBuyItems();
     }
 
-   // Function to load suggestions
-   function loadSuggestions() {
-    const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
-    const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
-    const suggestionList = document.getElementById('suggestionList');
-    suggestionList.innerHTML = ''; // Clears the suggestion list before loading it
 
-    // List of default suggestions when no items are in the lists
-    const defaultSuggestions = [
-        'Olio d\'oliva', 'Pomodorini', 'Insalata', 'Farina', 'Lattuga', 'Aglio', 'Formaggio', 'Latte', 'Pasta', 'Carne', 
-        'Dentifricio', 'Tovaglioli', 'Spazzola', 'Carta igienica', 'Detergente', 'Shampoo', 'Sapone', 'Sacca per il lavaggio'
-    ];
 
-    // If no items in savedObjects and savedBuyItems, suggest the default suggestions
+   // Suggested itms
+const defaultSuggestionsByLanguage = {
+    en: [
+        "Olive oil", "Cherry tomatoes", "Salad", "Flour", "Lettuce", "Garlic",
+        "Cheese", "Milk", "Pasta", "Meat", "Toothpaste", "Napkins",
+        "Brush", "Toilet paper", "Detergent", "Shampoo", "Soap", "Laundry bag"
+    ],
+    it: [
+        "Olio d'oliva", "Pomodorini", "Insalata", "Farina", "Lattuga", "Aglio",
+        "Formaggio", "Latte", "Pasta", "Carne", "Dentifricio", "Tovaglioli",
+        "Spazzola", "Carta igienica", "Detergente", "Shampoo", "Sapone", "Sacca per il lavaggio"
+    ]
+};
+
+// Function to load suggested items
+function loadSuggestions() {
+    const savedObjects = JSON.parse(localStorage.getItem("objects")) || [];
+    const savedBuyItems = JSON.parse(localStorage.getItem("buyItems")) || [];
+    const suggestionList = document.getElementById("suggestionList");
+    suggestionList.innerHTML = ""; 
+
+    // Obtain suggested items in the current language
+    const defaultSuggestions = defaultSuggestionsByLanguage[currentLanguage];
+
+    // If there are no saved items, load default suggestions
     if (savedObjects.length === 0 && savedBuyItems.length === 0) {
         defaultSuggestions.forEach(itemName => {
             if (!savedBuyItems.includes(itemName)) {
-                const li = document.createElement('li');
-                li.textContent = itemName;
-
-                const addBtn = document.createElement('button');
-                addBtn.textContent = 'Add';
-                addBtn.onclick = () => addBuyItemFromSuggestion(itemName);
-
-                li.appendChild(addBtn);
-                suggestionList.appendChild(li);
+                createSuggestionItem(itemName, suggestionList);
             }
         });
-        return; // Exit the function once default suggestions are shown
+        return;
     }
 
-    // Creates a set to avoid duplicates
-    const suggestedItems = new Set();
-
-    // Create a frequency map to track how often each item appears in all categories (food and non-food)
+    // Frequency Map for suggested Items
     const frequencyMap = savedObjects.reduce((acc, obj) => {
-        if (!acc[obj.name]) {
-            acc[obj.name] = 0;
-        }
-        acc[obj.name] += obj.quantity; // Add the quantity to the frequency count
+        acc[obj.name] = (acc[obj.name] || 0) + obj.quantity;
         return acc;
     }, {});
 
-    // Sort the items based on frequency (most frequent first)
+    // Sort the elements by frequency
     const sortedItems = Object.keys(frequencyMap).sort((a, b) => frequencyMap[b] - frequencyMap[a]);
 
-    // Suggest items based on frequency, avoiding already bought or suggested items
+    // Add suggested items sorted
+    const suggestedItems = new Set();
     let suggestionCount = 0;
-    sortedItems.forEach((itemName) => {
-        if (suggestionCount >= 7) return; // Limit to 7 suggestions
 
-        // Verify that the item isn't already added or suggested
+    sortedItems.forEach(itemName => {
+        if (suggestionCount >= 7) return;
         if (!savedBuyItems.includes(itemName) && !suggestedItems.has(itemName)) {
-            const li = document.createElement('li');
-            li.textContent = itemName;
-
-            // Creates the button to add an item to the list
-            const addBtn = document.createElement('button');
-            addBtn.textContent = 'Add';
-            addBtn.onclick = () => {
-                addBuyItemFromSuggestion(itemName); // Add item to the buy list
-                loadSuggestions(); // Refresh the suggestions list after adding the item
-            };
-
-            li.appendChild(addBtn);
-            suggestionList.appendChild(li);
-
-            // Add the item to the set to avoid duplicates in suggestions
+            createSuggestionItem(itemName, suggestionList);
             suggestedItems.add(itemName);
             suggestionCount++;
         }
     });
 
-    // If there are not enough suggestions based on frequency, fill the gap with default suggestions
-    if (suggestionCount < 7) {  // If less than 7 suggestions were added
-        defaultSuggestions.forEach(itemName => {
-            if (suggestionCount >= 7) return; // Stop once 7 suggestions are reached
+    // IF there are not enough suggested items, creates them
+    defaultSuggestions.forEach(itemName => {
+        if (suggestionCount >= 7) return;
+        if (!savedBuyItems.includes(itemName) && !suggestedItems.has(itemName)) {
+            createSuggestionItem(itemName, suggestionList);
+            suggestedItems.add(itemName);
+            suggestionCount++;
+        }
+    });
+}
 
-            if (!savedBuyItems.includes(itemName) && !suggestedItems.has(itemName)) {
-                const li = document.createElement('li');
-                li.textContent = itemName;
+// Function to create suggested items
+function createSuggestionItem(itemName, suggestionList) {
+    const li = document.createElement("li");
+    li.textContent = itemName;
 
-                const addBtn = document.createElement('button');
-                addBtn.textContent = 'Add';
-                addBtn.onclick = () => {
-                    addBuyItemFromSuggestion(itemName); // Add item to the buy list
-                    loadSuggestions(); // Refresh the suggestions list after adding the item
-                };
+    const addBtn = document.createElement("button");
+    addBtn.textContent = currentLanguage === "it" ? "Aggiungi" : "Add";
+    addBtn.onclick = () => {
+        addBuyItemFromSuggestion(itemName);
+        loadSuggestions();
+    };
 
-                li.appendChild(addBtn);
-                suggestionList.appendChild(li);
-
-                // Add the item to the set to avoid duplicates in suggestions
-                suggestedItems.add(itemName);
-                suggestionCount++;
-            }
-        });
-    }
+    li.appendChild(addBtn);
+    suggestionList.appendChild(li);
 }
 
 
-    // Function to add a suggested item on the list "to buy"
-    function addBuyItemFromSuggestion(itemName) {
-        const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
+const languageTranslations = {
+    Suggestions: { en: "Suggestions", it: "Suggerimenti" },
+    Add: { en: "Add", it: "Aggiungi" },
+    // Add other translation keys as needed
+};
 
-        // Adds the item on the list if it isn't already existing
-        if (!savedBuyItems.includes(itemName)) {
-            savedBuyItems.push(itemName);
-            localStorage.setItem('buyItems', JSON.stringify(savedBuyItems));
-        }
-
-        loadBuyItems();
-        loadSuggestions(); // Refrest the suggestion list
+const translations = {
+    it: {
+        "Dark Mode": "Modalità Scura",
+        "Color Picker": "Selettore Colore",
+        "Change Color": "Cambia Colore",
+        "Background:": "Sfondo:",
+        "Text:": "Testo:",
+        "Reset Colors": "Ripristina Colori",
+        "Show All": "Mostra Tutti",
+        "Product": "Prodotto",
+        "Expiry": "Scadenza",
+        "Delete": "Elimina",
+        "Expiry List": "Lista Scadenze",
+        "To Buy List": "Lista da Comprare",
+        "Suggestions": "Suggerimenti",
+        "Add": "Aggiungi",
+        "Find Items": "Trova Articoli",
+        "Insert Items": "Inserisci Articoli",
+        "Insert item name and expiry date.": "Inserisci nome e data di scadenza dell'articolo.",
+        "Insert name of the item to buy": "Inserisci il nome dell'articolo da comprare",
+    },
+    en: {
+        "Dark Mode": "Dark Mode",
+        "Color Picker": "Color Picker",
+        "Change Color": "Change Color",
+        "Background:": "Background:",
+        "Text:": "Text:",
+        "Reset Colors": "Reset Colors",
+        "Show All": "Show All",
+        "Product": "Product",
+        "Expiry": "Expiry",
+        "Delete": "Delete",
+        "Expiry List": "Expiry List",
+        "To Buy List": "To Buy List",
+        "Suggestions": "Suggestions",
+        "Add": "Add",
+        "Find Items": "Find Items",
+        "Insert Items": "Insert Items",
+        "Insert item name and expiry date.": "Insert item name and expiry date.",
+        "Insert name of the item to buy": "Insert name of the item to buy",
     }
+};
+
+let currentLanguage = 'en'; // Impostazione della lingua predefinita a 'en' (inglese)
+
+// Funzione per cambiare lingua e icona
+function changeLanguage(language) {
+    currentLanguage = language; // Aggiorna la lingua corrente
+
+    // Cambia l'icona della lingua in base alla lingua selezionata
+    const languageIcon = document.getElementById('language-icon');
+    if (language === 'it') {
+        languageIcon.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/1500px-Flag_of_Italy.svg.png';
+        languageIcon.alt = 'Italian Flag';
+    } else if (language === 'en') {
+        languageIcon.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg/1200px-Flag_of_the_United_Kingdom_%283-5%29.svg.png'; 
+        languageIcon.alt = 'English Flag';
+    }
+
+    // Aggiorna gli elementi con la traduzione in base alla lingua selezionata
+    document.querySelectorAll("[data-translate-key]").forEach((element) => {
+        const key = element.getAttribute("data-translate-key");
+        if (translations[language][key]) {
+            element.textContent = translations[language][key]; // Aggiorna il testo
+        }
+    });
+
+    // Cambia i placeholder dinamicamente
+    const searchBar = document.getElementById("searchBar");
+    if (searchBar) searchBar.placeholder = translations[language]["Find Items"];
+    
+    const buyItemInput = document.getElementById("buyItemName");
+    if (buyItemInput) buyItemInput.placeholder = translations[language]["Insert Items"];
+
+    loadSuggestions(); // Funzione personalizzata per ricaricare suggerimenti
+
+    updateDeleteButtons(); // Funzione per aggiornare i bottoni di eliminazione
+}
+
+// Aggiungi l'evento di clic sul bottone di cambio lingua
+document.getElementById('change-lang-button').addEventListener('click', function() {
+    // Se la lingua corrente è italiano, cambia in inglese, altrimenti cambia in italiano
+    if (currentLanguage === 'it') {
+        changeLanguage('en'); // Cambia in inglese
+    } else {
+        changeLanguage('it'); // Cambia in italiano
+    }
+});
+
+
+// Example function to load suggestions in the selected language
+function loadSuggestions() {
+    const suggestionList = document.getElementById("suggestionList");
+    suggestionList.innerHTML = "";
+
+    const defaultSuggestions = currentLanguage === "it" ?
+        ["Olio d'oliva", "Pomodorini", "Insalata", "Farina", "Lattuga"] :  // Add more items as needed
+        ["Olive oil", "Cherry tomatoes", "Salad", "Flour", "Lettuce"];  // Add more items as needed
+
+    defaultSuggestions.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+
+        const addBtn = document.createElement("button");
+        addBtn.textContent = currentLanguage === "it" ? "Aggiungi" : "Add";
+        li.appendChild(addBtn);
+
+        suggestionList.appendChild(li);
+    });
+}
+
+// Call language change function when the page loads to set the default language
+document.addEventListener("DOMContentLoaded", () => {
+    loadSuggestions(); // Load initial suggestions
+});
+
 
     // Function for searching the items
     function searchObjects() {
@@ -421,10 +529,4 @@ document.getElementById('reset-btn').addEventListener('click', resetColors);
     } else {
         document.body.classList.remove('dark-mode');
     }
-});
-
- // JavaScript to toggle the sidebar
- document.getElementById("show").addEventListener("click", function() {
-    var customBox = document.getElementById("customBox");
-    customBox.classList.toggle("active");
 });
