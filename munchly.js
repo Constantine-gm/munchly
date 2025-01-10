@@ -294,21 +294,30 @@ function loadSuggestions() {
     });
 }
 
-// Function to create suggested items
 function createSuggestionItem(itemName, suggestionList) {
     const li = document.createElement("li");
     li.textContent = itemName;
 
     const addBtn = document.createElement("button");
     addBtn.textContent = currentLanguage === "it" ? "Aggiungi" : "Add";
+    
+    // Update this line to call the correct function
     addBtn.onclick = () => {
-        addBuyItemFromSuggestion(itemName);
-        loadSuggestions();
+        // Directly add the suggested item to the "to buy" list
+        const buyItemName = itemName;
+        const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
+        savedBuyItems.push(buyItemName);
+        localStorage.setItem('buyItems', JSON.stringify(savedBuyItems));
+
+        // Clear the input field and reload the list
+        document.getElementById('buyItemName').value = '';
+        loadBuyItems();
     };
 
     li.appendChild(addBtn);
     suggestionList.appendChild(li);
 }
+
 
 
 const languageTranslations = {
@@ -406,27 +415,6 @@ document.getElementById('change-lang-button').addEventListener('click', function
     }
 });
 
-
-// Example function to load suggestions in the selected language
-function loadSuggestions() {
-    const suggestionList = document.getElementById("suggestionList");
-    suggestionList.innerHTML = "";
-
-    const defaultSuggestions = currentLanguage === "it" ?
-        ["Olio d'oliva", "Pomodorini", "Insalata", "Farina", "Lattuga"] :  // Add more items as needed
-        ["Olive oil", "Cherry tomatoes", "Salad", "Flour", "Lettuce"];  // Add more items as needed
-
-    defaultSuggestions.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-
-        const addBtn = document.createElement("button");
-        addBtn.textContent = currentLanguage === "it" ? "Aggiungi" : "Add";
-        li.appendChild(addBtn);
-
-        suggestionList.appendChild(li);
-    });
-}
 
 // Call language change function when the page loads to set the default language
 document.addEventListener("DOMContentLoaded", () => {
