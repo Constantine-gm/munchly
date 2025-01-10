@@ -312,6 +312,8 @@ function createSuggestionItem(itemName, suggestionList) {
         // Clear the input field and reload the list
         document.getElementById('buyItemName').value = '';
         loadBuyItems();
+
+        loadSuggestions(); // Refrest the suggestion list
     };
 
     li.appendChild(addBtn);
@@ -420,7 +422,6 @@ document.getElementById('change-lang-button').addEventListener('click', function
 document.addEventListener("DOMContentLoaded", () => {
     loadSuggestions(); // Load initial suggestions
 });
-
 
     // Function for searching the items
     function searchObjects() {
