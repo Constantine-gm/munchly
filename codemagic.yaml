@@ -5,8 +5,6 @@ workflows:
       vars:
         XCODE_WORKSPACE: "platforms/ios/YOUR_APP.xcworkspace"
         XCODE_SCHEME: "YOUR_SCHEME"
-    steps:
-      - checkout
       - run:
           name: Install npm dependencies
           command: |
