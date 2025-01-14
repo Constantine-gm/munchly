@@ -2,11 +2,11 @@ workflows:
   ios:
     name: Build iOS
     platform: ios
-    max_build_duration: 60
     build:
-      pre_cache:
+      # La configurazione per la build deve essere in un campo appropriato.
+      # Esegui il comando di build con npm o un altro strumento di build (es. Cordova o React Native).
+      commands:
         - npm install
-      scripts:
         - npm run build
     artifacts:
       - build/ios/ipa/*.ipa
