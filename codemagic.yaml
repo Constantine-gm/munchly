@@ -1,12 +1,19 @@
 workflows:
   ios:
     name: Build iOS
-    platform: ios
-    build:
-      # La configurazione per la build deve essere in un campo appropriato.
-      # Esegui il comando di build con npm o un altro strumento di build (es. Cordova o React Native).
-      commands:
-        - npm install
-        - npm run build
-    artifacts:
-      - build/ios/ipa/*.ipa
+    environment:
+      vars:
+        - name: FLUTTER_CHANNEL
+          value: stable
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            npm install
+      - run:
+          name: Build iOS app
+          command: |
+            cordova build ios --device --release
+      - upload-artifact:
+          path: platforms/ios/build/emulator/*.ipa
