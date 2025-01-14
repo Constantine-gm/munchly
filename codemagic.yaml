@@ -2,9 +2,7 @@ workflows:
   ios:
     name: Build iOS
     environment:
-      vars:
-        - name: FLUTTER_CHANNEL
-          value: stable
+      flutter: stable
     steps:
       - checkout
       - run:
@@ -14,6 +12,7 @@ workflows:
       - run:
           name: Build iOS app
           command: |
-            cordova build ios --device --release
-      - upload-artifact:
-          path: platforms/ios/build/emulator/*.ipa
+            cordova build ios --release
+      - archive:
+          directory: platforms/ios/build/device
+          output: build/ios-app.ipa
