@@ -2,15 +2,11 @@ workflows:
   ios:
     name: Build iOS
     platform: ios
-    sdk: iphoneos
+    max_build_duration: 60
     build:
-      script:
+      pre_cache:
         - npm install
+      scripts:
         - npm run build
     artifacts:
       - build/ios/ipa/*.ipa
-    publishing:
-      app_store_connect:
-        api_key: ${{ secrets.APP_STORE_API_KEY }}
-        api_issuer: ${{ secrets.APP_STORE_API_ISSUER }}
-        team_id: ${{ secrets.APP_STORE_TEAM_ID }}
