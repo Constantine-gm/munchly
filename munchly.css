@@ -6,6 +6,7 @@
     position: absolute;
     right:0;
     top:-5px;
+    transition: font-size 0.2s ease; /* Aggiungi una transizione per l'hover */
 
   }
   #show:hover {
@@ -284,8 +285,9 @@ img:not(#language-icon) {
 
 /* Logo */
 .title img {
-    width: 50px;
+   max-width: 100wv;
     animation: floatUpDown 1.5s ease-in-out infinite;
+
 }
 #searchBar {
     padding: 6px;
@@ -297,7 +299,7 @@ img:not(#language-icon) {
     color: #0d616f;
     font-weight: bold;
     margin-top: 30px;
-    height: 15px;
+    height: 1rem;
 
 }
 .line {
@@ -311,7 +313,7 @@ img:not(#language-icon) {
     color:#0a4752;
     font-weight: 700;
     margin-top:3px;
-    font-size: 25px;
+    font-size: 1.5rem;
 }
 .title3 {
     color:#0a4752;
@@ -334,7 +336,7 @@ img:not(#language-icon) {
 #suggestionList {
   list-style: none;
   font-weight:bold;
-  font-size:18px;
+  font-size:1.25rem;
 }
 
 input[type="text"], input[type="date"] {
