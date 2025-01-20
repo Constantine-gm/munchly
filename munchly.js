@@ -227,7 +227,7 @@ function updateDeleteButtons() {
 
 
 
-   // Suggested itms
+  // Suggested items
 const defaultSuggestionsByLanguage = {
     en: [
         "Olive oil", "Cherry tomatoes", "Salad", "Flour", "Lettuce", "Garlic",
@@ -243,50 +243,26 @@ const defaultSuggestionsByLanguage = {
 
 // Function to load suggested items
 function loadSuggestions() {
-    const savedObjects = JSON.parse(localStorage.getItem("objects")) || [];
-    const savedBuyItems = JSON.parse(localStorage.getItem("buyItems")) || [];
+    const { savedObjects, savedBuyItems } = loadSavedData();
     const suggestionList = document.getElementById("suggestionList");
-    suggestionList.innerHTML = ""; 
+    suggestionList.innerHTML = ""; // Clear the list
 
     // Obtain suggested items in the current language
     const defaultSuggestions = defaultSuggestionsByLanguage[currentLanguage];
+    const suggestedItems = new Set(savedBuyItems);
 
-    // If there are no saved items, load default suggestions
-    if (savedObjects.length === 0 && savedBuyItems.length === 0) {
-        defaultSuggestions.forEach(itemName => {
-            if (!savedBuyItems.includes(itemName)) {
-                createSuggestionItem(itemName, suggestionList);
-            }
-        });
-        return;
-    }
+    // Frequency Map for saved objects
+    const frequencyMap = generateFrequencyMap(savedObjects);
 
-    // Frequency Map for suggested Items
-    const frequencyMap = savedObjects.reduce((acc, obj) => {
-        acc[obj.name] = (acc[obj.name] || 0) + obj.quantity;
-        return acc;
-    }, {});
-
-    // Sort the elements by frequency
+    // Sort items by frequency and filter out already purchased items
     const sortedItems = Object.keys(frequencyMap).sort((a, b) => frequencyMap[b] - frequencyMap[a]);
 
-    // Add suggested items sorted
-    const suggestedItems = new Set();
+    // Add sorted items based on frequency first, then default suggestions if needed
     let suggestionCount = 0;
+    sortedItems.concat(defaultSuggestions).forEach(itemName => {
+        if (suggestionCount >= 7) return; // Stop after 7 items
 
-    sortedItems.forEach(itemName => {
-        if (suggestionCount >= 7) return;
-        if (!savedBuyItems.includes(itemName) && !suggestedItems.has(itemName)) {
-            createSuggestionItem(itemName, suggestionList);
-            suggestedItems.add(itemName);
-            suggestionCount++;
-        }
-    });
-
-    // IF there are not enough suggested items, creates them
-    defaultSuggestions.forEach(itemName => {
-        if (suggestionCount >= 7) return;
-        if (!savedBuyItems.includes(itemName) && !suggestedItems.has(itemName)) {
+        if (!suggestedItems.has(itemName)) {
             createSuggestionItem(itemName, suggestionList);
             suggestedItems.add(itemName);
             suggestionCount++;
@@ -294,6 +270,22 @@ function loadSuggestions() {
     });
 }
 
+// Function to load saved objects and buy items from localStorage
+function loadSavedData() {
+    const savedObjects = JSON.parse(localStorage.getItem("objects")) || [];
+    const savedBuyItems = JSON.parse(localStorage.getItem("buyItems")) || [];
+    return { savedObjects, savedBuyItems };
+}
+
+// Function to generate a frequency map for the saved objects
+function generateFrequencyMap(savedObjects) {
+    return savedObjects.reduce((acc, obj) => {
+        acc[obj.name] = (acc[obj.name] || 0) + obj.quantity;
+        return acc;
+    }, {});
+}
+
+// Function to create a suggestion item in the UI
 function createSuggestionItem(itemName, suggestionList) {
     const li = document.createElement("li");
     li.textContent = itemName;
@@ -301,24 +293,26 @@ function createSuggestionItem(itemName, suggestionList) {
     const addBtn = document.createElement("button");
     addBtn.textContent = currentLanguage === "it" ? "Aggiungi" : "Add";
     
-    // Update this line to call the correct function
     addBtn.onclick = () => {
-        // Directly add the suggested item to the "to buy" list
-        const buyItemName = itemName;
-        const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
-        savedBuyItems.push(buyItemName);
-        localStorage.setItem('buyItems', JSON.stringify(savedBuyItems));
-
-        // Clear the input field and reload the list
-        document.getElementById('buyItemName').value = '';
-        loadBuyItems();
-
-        loadSuggestions(); // Refrest the suggestion list
+        addItemToBuyList(itemName);
+        loadBuyItems(); // Refresh the buy list
+        loadSuggestions(); // Refresh the suggestion list
     };
 
     li.appendChild(addBtn);
     suggestionList.appendChild(li);
 }
+
+// Function to add item to buy list and update localStorage
+function addItemToBuyList(itemName) {
+    const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
+    savedBuyItems.push(itemName);
+    localStorage.setItem('buyItems', JSON.stringify(savedBuyItems));
+
+    // Clear the input field
+    document.getElementById('buyItemName').value = '';
+}
+
 
 
 
@@ -371,13 +365,13 @@ const translations = {
     }
 };
 
-let currentLanguage = 'en'; // Impostazione della lingua predefinita a 'en' (inglese)
+let currentLanguage = 'en';
 
-// Funzione per cambiare lingua e icona
+// Function to change lang icon
 function changeLanguage(language) {
-    currentLanguage = language; // Aggiorna la lingua corrente
+    currentLanguage = language; 
 
-    // Cambia l'icona della lingua in base alla lingua selezionata
+    // Change icon based on language setting
     const languageIcon = document.getElementById('language-icon');
     if (language === 'it') {
         languageIcon.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/1500px-Flag_of_Italy.svg.png';
@@ -387,33 +381,33 @@ function changeLanguage(language) {
         languageIcon.alt = 'English Flag';
     }
 
-    // Aggiorna gli elementi con la traduzione in base alla lingua selezionata
+    // Updates the elements with current translation
     document.querySelectorAll("[data-translate-key]").forEach((element) => {
         const key = element.getAttribute("data-translate-key");
         if (translations[language][key]) {
-            element.textContent = translations[language][key]; // Aggiorna il testo
+            element.textContent = translations[language][key]; // Updates text
         }
     });
 
-    // Cambia i placeholder dinamicamente
+    // Change placeholder dinamically
     const searchBar = document.getElementById("searchBar");
     if (searchBar) searchBar.placeholder = translations[language]["Find Items"];
     
     const buyItemInput = document.getElementById("buyItemName");
     if (buyItemInput) buyItemInput.placeholder = translations[language]["Insert Items"];
 
-    loadSuggestions(); // Funzione personalizzata per ricaricare suggerimenti
+    loadSuggestions(); 
 
-    updateDeleteButtons(); // Funzione per aggiornare i bottoni di eliminazione
+    updateDeleteButtons(); 
 }
 
-// Aggiungi l'evento di clic sul bottone di cambio lingua
+// Add click event on Language item
 document.getElementById('change-lang-button').addEventListener('click', function() {
-    // Se la lingua corrente è italiano, cambia in inglese, altrimenti cambia in italiano
+
     if (currentLanguage === 'it') {
-        changeLanguage('en'); // Cambia in inglese
+        changeLanguage('en'); 
     } else {
-        changeLanguage('it'); // Cambia in italiano
+        changeLanguage('it');
     }
 });
 
