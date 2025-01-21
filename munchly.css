@@ -337,6 +337,7 @@ img:not(#language-icon) {
   list-style: none;
   font-weight:bold;
   font-size:1.25rem;
+  text-align: center;
 }
 
 input[type="text"], input[type="date"] {
