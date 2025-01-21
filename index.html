@@ -50,8 +50,9 @@
     </div>
     </div>
     <!-- Page Title -->
-    <div class="htit"><div class="title"><img 
-        src="munchicon480.webp" alt="Munchly-Logo"
+    <div class="htit">
+        <div class="title">
+            <img src="munchicon480.webp" style="width:4vw;" alt="Munchly-Logo"
         onclick="window.location.reload();"> Munchly</div>
     <input type="text" id="searchBar" placeholder="Find Items" oninput="searchObjects()"/>
 </div>
@@ -60,8 +61,8 @@
 <body>
 <div class="exp">
     <input type="text" id="objectName" placeholder="Item Name" />
-    <label for="expirydate" style="display:none;"></label><input type="date" id="expiryDate" />
-    <input type="number" id="quantity" value="1" min="1">
+    <label for="expirydate" style="display:none;"></label><input type="date" id="expiryDate"/>
+    <label for="quantity" style="display:none;"></label><input type="number" id="quantity" value="1" min="1">
     <button onclick="addObject()" data-translate-key="Add">Add</button>
 </div>
 
