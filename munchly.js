@@ -458,6 +458,50 @@ document.addEventListener("DOMContentLoaded", () => {
         loadObjects();
     }
 
+    // Function to export both expiry date objects and to-buy list as a text file
+function exportListAsText() {
+    // Get the saved objects (expiry date items) from localStorage
+    const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
+    
+    // Get the saved buy items (to buy list) from localStorage
+    const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
+
+    // Create the content for the text file
+    let fileContent = "Lista della Spesa:\n\n";
+    
+    // Adding expiry date items
+    fileContent += "Oggetti con Scadenza:\n";
+    savedObjects.forEach((obj) => {
+        const formattedDate = formatDate(obj.expiryDate);
+        fileContent += `${obj.name} - Quantità: ${obj.quantity} - Scadenza: ${formattedDate}\n`;
+    });
+
+    // Adding a separator between the lists
+    fileContent += "\n----------------------\n\n";
+    
+    // Adding to-buy items
+    fileContent += "Oggetti da Comprare:\n";
+    savedBuyItems.forEach((item) => {
+        fileContent += `${item}\n`;
+    });
+
+    // Create a Blob with the content
+    const blob = new Blob([fileContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary link to trigger the download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'lista_della_spesa_completa.txt'; // Set the file name
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // Clean up the URL object
+    URL.revokeObjectURL(url);
+}
+
+
     // Loads items and to buy items as the page opens
     loadObjects();
     loadBuyItems();

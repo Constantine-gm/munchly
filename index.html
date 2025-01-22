@@ -52,7 +52,7 @@
     <!-- Page Title -->
     <div class="htit">
         <div class="title">
-            <img src="munchicon480.webp" style="width:4vw;" alt="Munchly-Logo"
+            <img src="munchicon480.webp" style="width:10vw;" alt="Munchly-Logo"
         onclick="window.location.reload();"> Munchly</div>
     <input type="text" id="searchBar" placeholder="Find Items" oninput="searchObjects()"/>
 </div>
@@ -74,6 +74,7 @@
     <div class="title2" data-translate-key="Expiry List">Expiry List</div>
     <div class="btns">
     <button class="mostrabtn" onclick="toggleShowAll()" data-translate-key="Show All">Show All</button>
+    <button onclick="exportListAsText()">Export</button>
     <button id="undoDiv" style="display:none; width:50px; background:red;" onclick="restoreDeletedObject()"><i class="fa-solid fa-arrow-rotate-left"></i></button>
 </div>
     <table id="objectTable">
