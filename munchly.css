@@ -94,72 +94,87 @@
     margin-bottom: 3px; /* Space between each custom-box */
 }
 
+
 .dark-mode {
-    background-color: #3a3d45;
+    background-color: #547d8d;
     color: white;
 }
 
 
 .dark-mode header {
-    background-color: rgb(52, 122, 132);
+    background-color: #2c424a;
 }
 
 .dark-mode th {
-    background-color: rgb(52, 122, 132);
-    color: white;
+    background-color: #2e5558;
+    color: #DEF2F1;
 }
 
-.dark-mode .title {
-    color: #dffbff;
+/* Titles */
+body.dark-mode .title {
+    color: #ebfdff; 
+    text-shadow: 0 0 5px rgba(184, 240, 255, 0.8);
+}
+body.dark-mode .title2, 
+body.dark-mode .title3 {
+    color: #17252A;
+}
+.dark-mode .line {
+    border-color: #17252A;
 }
 
 .dark-mode table {
-    border-color: rgb(52, 122, 132);
-    background-color: rgba(202, 231, 235, 0.176);
-    color: black;
+    border-color: #17252A;;
+    background-color: rgba(202, 231, 235, 0.404);
+    color:#17252A;
 }
 
-.dark-mode .title2 {
-    color: #99f3ff;
-}
-
-.dark-mode .title3 {
-    color: #99f3ff;
-}
 
 .dark-mode .red {
-    color: rgb(209, 36, 36);
-    background-color: rgba(220, 162, 162, 0.678);
+    color: rgb(118, 7, 7);
+    background-color: rgba(247, 148, 148, 0.678);
     font-weight: bolder;
 }
 
 .dark-mode button {
     background-color: #3c8545;
-    color: white;
+    color:  #DEF2F1;
+    box-shadow: 0px 0px 3px #333c41;
 }
+
 .dark-mode #suggestions {
-    color: #99f3ff;
+    color: #17252A;
 }
 
 .dark-mode .deletebtn {
     background-color: #8e2222;
-    color: white;
+    color: #DEF2F1;
 }
 
 .dark-mode .mostrabtn {
     background-color: #cb9319;
-    color: white;
+    color: #DEF2F1;
 }
 
-.dark-mode input[type="text"], .dark-mode input[type="date"], .dark-mode #quantity {
-    background-color: #727272b8;
-    color: rgb(150, 250, 255);
-    border: 1px solid #555;
-    border-radius: 3px;
+/* Input */
+body.dark-mode input[type="text"],
+body.dark-mode input[type="date"],
+body.dark-mode input[type="number"] {
+    background-color: rgba(202, 231, 235, 0.404);
+    color:  #17252A;
+    border: 1px solid #555; 
+    padding: 8px;
+    border-radius: 4px;
 }
 
+body.dark-mode input[type="text"]:focus,
+body.dark-mode input[type="date"]:focus,
+body.dark-mode input[type="number"]:focus {
+    border-color: #409198; /* Blu chiaro per il bordo quando è in focus */
+    outline: none;
+}
 
-    /* DarkMode */
+    /* DarkMode box */
 
     #dmlabel {
         top:-10px;
