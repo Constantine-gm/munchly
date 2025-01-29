@@ -1,0 +1,3 @@
+[submodule "munchly_appdroid"]
+	path = munchly_appdroid
+	url = https://github.com/Constantine-gm/munchly_appdroid.git
