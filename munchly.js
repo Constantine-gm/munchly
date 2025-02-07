@@ -9,6 +9,7 @@
         deleteButtons.forEach(button => {
             button.textContent = translations[currentLanguage]["Delete"];
         });
+        loadBuyItems();
     }
     //lOGIN 
 
@@ -16,21 +17,25 @@
     const profile = document.getElementById("profile");
     const profileName = document.getElementById("profileName");
     const loginPopup = document.getElementById("loginPopup");
+    const closeLoginPopup = document.getElementById("closeLoginPopup");
     const logoutPopup = document.getElementById("logoutPopup");
     const usernameInput = document.getElementById("username");
     const emailInput = document.getElementById("email");
     const closeLogoutPopup = document.getElementById("closeLogoutPopup");
+    
 
     // Funzione per aprire il popup
     function openPopup(popupId) {
       document.getElementById(popupId).style.display = "flex";
     }
+  
 
     // Funzione per chiudere il popup
     function closePopup(popupId) {
       document.getElementById(popupId).style.display = "none";
     }
 
+    
     // Funzione di login
     function login() {
       const username = usernameInput.value;
@@ -51,6 +56,7 @@
       displayProfile();
     }
 
+
  // Funzione per mostrare il profilo utente
 function displayProfile() {
     const username = localStorage.getItem("username");
@@ -62,9 +68,11 @@ function displayProfile() {
   
       profile.style.display = "block"; // Mostra il profilo
       loginBtn.style.display = "none"; // Nasconde il bottone login
+      totalsBox.style.display = "block";
     } else {
       profile.style.display = "none"; // Nasconde il profilo
       loginBtn.style.display = "block"; // Mostra il bottone login
+      totalsBox.style.display = "none";
     }
   }
 
@@ -79,19 +87,18 @@ function displayProfile() {
     });
 
 
+
 // Aggiungi evento per chiudere il pop-up di logout quando clicchi sull'icona X
 closeLogoutPopup.addEventListener("click", function () {
     closePopup("logoutPopup");
   });
+
     // Carica il profilo utente se l'utente è già loggato (senza pop-up di log-out)
     window.onload = function() {
       displayProfile();
       closePopup("logoutPopup");  // Assicurati che il pop-up di log-out sia nascosto
     };
   
-
-
-
     //List
             let showAll = false;
         let recentlyDeleted = null;  // Memorize the deleted item and quantity
@@ -168,6 +175,8 @@ closeLogoutPopup.addEventListener("click", function () {
             // Loads suggestions
             loadSuggestions();
             updateDeleteButtons();
+        
+                updateTotals();
         }
     
         // Function to add items
@@ -199,6 +208,9 @@ closeLogoutPopup.addEventListener("click", function () {
             document.getElementById('quantity').value = '';
     
             loadObjects();
+              // Aggiorna il totale dei prodotti
+              updateTotals();
+    
         }
     
         // Function to format data
@@ -229,6 +241,7 @@ closeLogoutPopup.addEventListener("click", function () {
                 const updatedObjects = savedObjects.filter(obj => obj.id !== id);
                 localStorage.setItem('objects', JSON.stringify(updatedObjects));
                 loadObjects();
+                updateTotals();
             }
         }
     
@@ -252,27 +265,45 @@ closeLogoutPopup.addEventListener("click", function () {
                 recentlyDeleted = null; // Reset of the variable
     
                 loadObjects();
+                  // Aggiorna il totale dei prodotti
+    updateTotals();
             }
         }
     
         // Function to add item to the list "To Buy"
         function addBuyItem() {
             const buyItemName = document.getElementById('buyItemName').value;
-    
+            const inputField = document.getElementById('buyItemName'); // Get the input field
+        
             if (!buyItemName) {
                 alert("Insert name of the item to buy");
                 return;
             }
-    
+        
             const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
+        
+            // Check if the item is already in the list
+            if (savedBuyItems.includes(buyItemName)) {
+                // Add error class to input field
+                inputField.classList.add('input-error');
+                return; // Don't add the item if it's already in the list
+            }
+        
+            // Remove error class if the input is valid
+            inputField.classList.remove('input-error');
+        
             savedBuyItems.push(buyItemName);
-    
             localStorage.setItem('buyItems', JSON.stringify(savedBuyItems));
-    
-            document.getElementById('buyItemName').value = '';
-    
+        
+            inputField.value = ''; // Clear input
+        
             loadBuyItems();
+            updateTotals();
         }
+        // Aggiungi un evento di focus per rimuovere il bordo rosso quando l'utente modifica l'input
+document.getElementById('buyItemName').addEventListener('focus', function() {
+    this.classList.remove('input-error'); // Rimuove il bordo rosso quando l'utente interagisce con l'input
+});
     
         // Function for loading "to Buy" items
         function loadBuyItems() {
@@ -305,6 +336,8 @@ closeLogoutPopup.addEventListener("click", function () {
             localStorage.setItem('buyItems', JSON.stringify(savedBuyItems));
     
             loadBuyItems();
+              // Aggiorna il totale dei prodotti
+            updateTotals();
         }
     
     
@@ -379,6 +412,7 @@ closeLogoutPopup.addEventListener("click", function () {
             addItemToBuyList(itemName);
             loadBuyItems(); // Refresh the buy list
             loadSuggestions(); // Refresh the suggestion list
+            updateTotals();
         };
     
         li.appendChild(addBtn);
@@ -510,6 +544,7 @@ closeLogoutPopup.addEventListener("click", function () {
    updateDeleteButtons(); 
 
    displayProfile();  
+   updateTotals();
 }
     
  // Aggiungi un evento al pulsante di cambio lingua
@@ -522,6 +557,27 @@ document.getElementById('change-lang-button').addEventListener('click', function
     }
 });
 
+//COUNTER ITEMS
+// Funzione per aggiornare i totali dei prodotti nelle due liste
+function updateTotals() {
+    const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
+    const savedBuyItems = JSON.parse(localStorage.getItem('buyItems')) || [];
+
+    // Conta tutti i prodotti in scadenza (anche quelli non visibili)
+    const expiryCount = savedObjects.reduce((count, obj) => {
+        const expiryDate = new Date(obj.expiryDate);
+        if (expiryDate >= new Date()) {
+            count += obj.quantity; // Aggiungi la quantità dell'oggetto
+        }
+        return count;
+    }, 0);
+
+    const buyCount = savedBuyItems.length;
+
+    // Aggiorna il contatore nella pagina
+    document.getElementById("expiryCount").textContent = expiryCount;
+    document.getElementById("buyCount").textContent = buyCount;
+}
 
     
         // Function for searching the items
@@ -563,6 +619,7 @@ document.getElementById('change-lang-button').addEventListener('click', function
         function toggleShowAll() {
             showAll = !showAll;
             loadObjects();
+            updateTotals();
         }
     
      // Aggiungi un ascoltatore di eventi per il clic del pulsante Export
@@ -584,7 +641,8 @@ document.getElementById('change-lang-button').addEventListener('click', function
         // Loads items and to buy items as the page opens
         loadObjects();
         loadBuyItems();
-        displayProfile();  
+        displayProfile(); 
+        updateTotals(); 
     
     //Color Picker
         // Function to apply selected colors

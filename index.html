@@ -27,19 +27,25 @@
         </div>
         <!-- Login Form -->
 
-        <div class="custom-box">
+        <div class="custom-box" >
             <button id="loginBtn" data-translate-key="loginButton">Login</button>
+        <div id="login">
             <div id="profile">
               <p id="greeting"><span id="profileName"></span></p>
             </div>
+            <div id="totalsBox">
+                <p><i class="fas fa-apple-alt"></i>:    <span id="expiryCount">0</span></p>
+                <p><i class="fas fa-shopping-cart"></i>:   <span id="buyCount">0</span></p>
+            </div>
+        </div>
           </div>
         
           <!-- Pop-up Login -->
           <div id="loginPopup" class="popup">
             <div class="popup-content">
               <h3 data-translate-key="loginPopupTitle">Accedi al tuo account</h3>
-              <input type="text" id="username" placeholder="Nome Utente" data-translate-key="usernamePlaceholder">
-              <input type="email" id="email" placeholder="Email" data-translate-key="emailPlaceholder">
+             <input type="text" id="username" placeholder="Nome Utente" data-translate-key="usernamePlaceholder">
+             <input type="email" id="email" placeholder="Email" data-translate-key="emailPlaceholder"><br>
               <button onclick="login()" data-translate-key="loginButtonAction">Accedi</button>
             </div>
           </div>

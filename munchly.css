@@ -82,22 +82,44 @@
 
 /* Reduce the space between the Change Language and Dark Mode sections */
 #customBox .custom-box:first-of-type {
-    margin-bottom: 0; /* Remove the space below the language icon */
+    margin-bottom: 40px; /* Remove the space below the language icon */
 }
 
 #customBox .custom-box:last-of-type {
     margin-top: 0; /* Remove the space above the dark mode section */
 }
 
-.custom-box {
+.custom-box  {
     display: flex;
     margin-bottom: 3px; /* Space between each custom-box */
 }
+
 /* LOGIN FORM*/
+    #login {
+        display: flex; 
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        gap:3px;
+        justify-content: flex-start;
+}
 
 #loginForm, #profile {
     display: none;
+
+
   }
+#totalsBox {
+    background-color: #f3f3f31d;
+    border-radius: 5px;
+    font-size: 14px;
+    align-items: center;
+    padding:0.4em;
+}
+
+#totalsBox p {
+    margin: 0 10px;
+}
   #loginBtn {
     padding: 10px 20px;
     background-color: #4CAF50;
@@ -106,17 +128,24 @@
     cursor: pointer;
     font-size: 16px;
   }
-  #profileName {
+ 
+  #profile {
     cursor: pointer;
-    font-size: 18px;
+    font-size: 1.2em;
     color: white;
     background-color: #4CAF50;
-    padding: 10px 20px;
+    padding:0.6em;
     border: none;
+    width: auto;
     border-radius: 5px;
-    display: inline-block;
+    align-items: center;
+
   }
-  #profileName:hover {
+  #profile p, #profile span {
+    margin: 0;
+    padding: 0;
+}
+  #profile:hover {
     background-color: #45a049;
   }
   .popup {
@@ -129,34 +158,43 @@
     background: rgba(0, 0, 0, 0.7);
     justify-content: center;
     align-items: center;
+    color:black;
   }
+ 
   .popup-content {
     background-color: white;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     position: relative; /* Per posizionare l'icona X dentro il popup */
-    width: 300px; /* Puoi regolare la larghezza come preferisci */
+    width: 20em; 
   }
+  
   .close-btn {
     position: absolute;
     top: 0px;
     right: 10px;
     font-size: 25px;
     cursor: pointer;
-    color:grey;
+    color:black;
   }
   .close-btn:hover {
     color: red; /* Cambia colore al passaggio del mouse */
   }
-  .popup input {
-    width: 100%;
+  .popup #username {
+    width: 20em;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  .popup #email {
+    width: 18.6em;
     padding: 10px;
     margin: 10px 0;
   }
   #logoutPopup {
     display: flex;
   }
+
 
 
 
@@ -450,6 +488,9 @@ input[type="text"], input[type="date"] {
 #buyItemName {
     margin-top:-10px;
     width:135px;
+}
+.input-error {
+    border:2px solid  red;
 }
 #quantity {    
     margin: 3px;
