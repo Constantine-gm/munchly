@@ -385,7 +385,7 @@ padding:5px;
     box-sizing: border-box;
 }
 img:not(#language-icon) {
-    width:4vw;
+    width:1.2em;
     transform: translate(0%, 20%);
     animation: floatUpDown 1.5s ease-in-out infinite;
     cursor: pointer;
@@ -760,6 +760,9 @@ right:3px;
 #login {
     display:block;
     justify-content: left;
+    }
+    #logotitle {
+        size:1em;
     }
 
 }
