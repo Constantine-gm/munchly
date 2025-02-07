@@ -1,0 +1,20 @@
+{
+    "webexe_settings": {
+        "blacklist": "",
+        "custom_script": "",
+        "download_dir": "C:/Users/grmac/Downloads",
+        "export_dir": "C:/Users/grmac/Desktop",
+        "force_download": false,
+        "linux-x32": false,
+        "linux-x64": false,
+        "mac-x64": false,
+        "nw_compression_level": 0,
+        "nw_version": "0.94.1",
+        "output_pattern": "munchly_1.0_exe",
+        "sdk_build": false,
+        "uncompressed_folder": false,
+        "whitelist": "",
+        "windows-x32": false,
+        "windows-x64": true
+    }
+}
