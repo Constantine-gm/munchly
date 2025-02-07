@@ -181,6 +181,17 @@
   .close-btn:hover {
     color: red; /* Cambia colore al passaggio del mouse */
   }
+  .close-btn2 {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    font-size: 25px;
+    cursor: pointer;
+    color:black;
+  }
+  .close-btn2:hover {
+    color: red; /* Cambia colore al passaggio del mouse */
+  }
   .popup #username {
     width: 20em;
     padding: 10px;
@@ -652,7 +663,7 @@ tr {
         position: fixed;
         top: 0; 
         right:-300px; /* Initially hide on the right */
-        width: 95px;
+        width: 150px;
         height: 100%;
         background-color: #333;
         color: white;
@@ -746,4 +757,11 @@ right:3px;
     margin:0 auto;
     width:90%;
 }
+#login {
+    display:block;
+    justify-content: left;
+    }
+
 }
+
+
