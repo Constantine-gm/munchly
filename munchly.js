@@ -10,7 +10,89 @@
             button.textContent = translations[currentLanguage]["Delete"];
         });
     }
-            
+    //lOGIN 
+
+    const loginBtn = document.getElementById("loginBtn");
+    const profile = document.getElementById("profile");
+    const profileName = document.getElementById("profileName");
+    const loginPopup = document.getElementById("loginPopup");
+    const logoutPopup = document.getElementById("logoutPopup");
+    const usernameInput = document.getElementById("username");
+    const emailInput = document.getElementById("email");
+    const closeLogoutPopup = document.getElementById("closeLogoutPopup");
+
+    // Funzione per aprire il popup
+    function openPopup(popupId) {
+      document.getElementById(popupId).style.display = "flex";
+    }
+
+    // Funzione per chiudere il popup
+    function closePopup(popupId) {
+      document.getElementById(popupId).style.display = "none";
+    }
+
+    // Funzione di login
+    function login() {
+      const username = usernameInput.value;
+      const email = emailInput.value;
+      if (username && email) {
+        localStorage.setItem("username", username);
+        localStorage.setItem("email", email);
+        closePopup("loginPopup");
+        displayProfile();
+      }
+    }
+
+    // Funzione di log out
+    function logout() {
+      localStorage.removeItem("username");
+      localStorage.removeItem("email");
+      closePopup("logoutPopup");
+      displayProfile();
+    }
+
+ // Funzione per mostrare il profilo utente
+function displayProfile() {
+    const username = localStorage.getItem("username");
+    const greetingText = translations[currentLanguage].greeting; // Ottieni il saluto tradotto
+  
+    if (username) {
+      // Combinare il saluto tradotto con il nome utente e assegnarlo direttamente a profileName
+      document.getElementById('profileName').textContent = greetingText + " " + username;
+  
+      profile.style.display = "block"; // Mostra il profilo
+      loginBtn.style.display = "none"; // Nasconde il bottone login
+    } else {
+      profile.style.display = "none"; // Nasconde il profilo
+      loginBtn.style.display = "block"; // Mostra il bottone login
+    }
+  }
+
+    // Mostra il pop-up di logout quando clicchi su "Ciao, Nome Utente"
+    profileName.addEventListener("click", () => {
+      openPopup("logoutPopup");
+    });
+
+    // Mostra il pop-up di login quando clicchi sul bottone "Login"
+    loginBtn.addEventListener("click", () => {
+      openPopup("loginPopup");
+    });
+
+
+// Aggiungi evento per chiudere il pop-up di logout quando clicchi sull'icona X
+closeLogoutPopup.addEventListener("click", function () {
+    closePopup("logoutPopup");
+  });
+    // Carica il profilo utente se l'utente è già loggato (senza pop-up di log-out)
+    window.onload = function() {
+      displayProfile();
+      closePopup("logoutPopup");  // Assicurati che il pop-up di log-out sia nascosto
+    };
+  
+
+
+
+    //List
             let showAll = false;
         let recentlyDeleted = null;  // Memorize the deleted item and quantity
     
@@ -319,7 +401,7 @@
     const languageTranslations = {
         Suggestions: { en: "Suggestions", it: "Suggerimenti" },
         Add: { en: "Add", it: "Aggiungi" },
-        // Add other translation keys as needed
+        // Altri tasti di traduzione...
     };
     
     const translations = {
@@ -343,6 +425,15 @@
             "Insert item name and expiry date.": "Inserisci nome e data di scadenza dell'articolo.",
             "Insert name of the item to buy": "Inserisci il nome dell'articolo da comprare",
             "Export": "Esporta",
+            "loginButton": "Accedi",
+            "greeting": "Ciao, ",
+            "loginPopupTitle": "Accedi al tuo account",
+            "usernamePlaceholder": "Nome Utente",
+            "emailPlaceholder": "Email",
+            "loginButtonAction": "Accedi",
+            "logoutConfirmation": "Sei sicuro di voler fare il log out?",
+            "logoutButton": "Esci",
+          
         },
         en: {
             "Dark Mode": "Dark Mode",
@@ -363,20 +454,32 @@
             "Insert Items": "Insert Items",
             "Insert item name and expiry date.": "Insert item name and expiry date.",
             "Insert name of the item to buy": "Insert name of the item to buy",
-            "Export":"Export",
+            "Export": "Export",
+            "loginButton": "Login",
+            "greeting": "Hello, ",
+            "loginPopupTitle": "Sign in to your account",
+            "usernamePlaceholder": "Username",
+            "emailPlaceholder": "Email",
+            "loginButtonAction": "Log In",
+            "logoutConfirmation": "Are you sure you want to log out?",
+            "logoutButton": "Log Out",
         }
     };
     
-    let currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
+    document.addEventListener('DOMContentLoaded', () => {
+        // Recupera la lingua salvata in localStorage, altrimenti usa 'en' come predefinito
+        let currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
     
-    // Function to change lang icon
+        // Applica la lingua salvata
+        changeLanguage(currentLanguage);
+    });
+    
     function changeLanguage(language) {
         currentLanguage = language; 
-    
-        // Salva la lingua selezionata nel localStorage
         localStorage.setItem('selectedLanguage', language);
+
     
-        // Change icon based on language setting
+        // Cambia l'icona della lingua in base alla lingua selezionata
         const languageIcon = document.getElementById('language-icon');
         if (language === 'it') {
             languageIcon.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/1500px-Flag_of_Italy.svg.png';
@@ -386,41 +489,40 @@
             languageIcon.alt = 'English Flag';
         }
     
-        // Updates the elements with current translation
-        document.querySelectorAll("[data-translate-key]").forEach((element) => {
-            const key = element.getAttribute("data-translate-key");
-            if (translations[language][key]) {
-                element.textContent = translations[language][key]; // Updates text
-            }
-        });
-    
-        // Change placeholder dinamically
-        const searchBar = document.getElementById("searchBar");
-        if (searchBar) searchBar.placeholder = translations[language]["Find Items"];
-        
-        const buyItemInput = document.getElementById("buyItemName");
-        if (buyItemInput) buyItemInput.placeholder = translations[language]["Insert Items"];
-    
-        loadSuggestions(); 
-    
-        updateDeleteButtons(); 
+   
+ // Cambia il testo degli elementi sulla pagina in base alla lingua selezionata
+ document.querySelectorAll("[data-translate-key]").forEach((element) => {
+    const key = element.getAttribute("data-translate-key");
+    if (translations[language][key]) {
+        element.textContent = translations[language][key];
     }
+});
+
     
-    // Add click event on Language item
-    document.getElementById('change-lang-button').addEventListener('click', function() {
+   // Cambia i placeholder dinamicamente
+   const searchBar = document.getElementById("searchBar");
+   if (searchBar) searchBar.placeholder = translations[language]["Find Items"];
+   const buyItemInput = document.getElementById("buyItemName");
+   if (buyItemInput) buyItemInput.placeholder = translations[language]["Insert Items"];
+   
+   // Ricarica altre informazioni
+   loadSuggestions(); 
+   updateDeleteButtons(); 
+
+   displayProfile();  
+}
     
-        if (currentLanguage === 'it') {
-            changeLanguage('en'); 
-        } else {
-            changeLanguage('it');
-        }
-    });
-    
-    
-    // Call language change function when the page loads to set the default language
-    document.addEventListener("DOMContentLoaded", () => {
-        loadSuggestions(); // Load initial suggestions
-    });
+ // Aggiungi un evento al pulsante di cambio lingua
+document.getElementById('change-lang-button').addEventListener('click', function() {
+    // Cambia la lingua quando l'utente clicca
+    if (currentLanguage === 'it') {
+        changeLanguage('en'); // Cambia a inglese
+    } else {
+        changeLanguage('it'); // Cambia a italiano
+    }
+});
+
+
     
         // Function for searching the items
         function searchObjects() {
@@ -482,6 +584,7 @@
         // Loads items and to buy items as the page opens
         loadObjects();
         loadBuyItems();
+        displayProfile();  
     
     //Color Picker
         // Function to apply selected colors

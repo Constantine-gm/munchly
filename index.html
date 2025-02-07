@@ -25,6 +25,33 @@
             <button id="change-lang-button"><img id="language-icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg/1200px-Flag_of_the_United_Kingdom_%283-5%29.svg.png" alt="English Flag">
             </button>
         </div>
+        <!-- Login Form -->
+
+        <div class="custom-box">
+            <button id="loginBtn" data-translate-key="loginButton">Login</button>
+            <div id="profile">
+              <p id="greeting"><span id="profileName"></span></p>
+            </div>
+          </div>
+        
+          <!-- Pop-up Login -->
+          <div id="loginPopup" class="popup">
+            <div class="popup-content">
+              <h3 data-translate-key="loginPopupTitle">Accedi al tuo account</h3>
+              <input type="text" id="username" placeholder="Nome Utente" data-translate-key="usernamePlaceholder">
+              <input type="email" id="email" placeholder="Email" data-translate-key="emailPlaceholder">
+              <button onclick="login()" data-translate-key="loginButtonAction">Accedi</button>
+            </div>
+          </div>
+        
+          <!-- Pop-up Log Out -->
+          <div id="logoutPopup" class="popup">
+            <div class="popup-content">
+                <span id="closeLogoutPopup" class="close-btn">&times;</span>
+                <button onclick="logout()" data-translate-key="logoutButton">Log Out</button>
+            </div>
+          </div>
+        
         <!-- Dark Mode -->
         <p class="p1" data-translate-key="Dark Mode">Dark Mode</p>
          <div class="custom-box" id="box1">
