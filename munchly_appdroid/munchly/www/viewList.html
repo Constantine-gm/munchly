@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">View Lists</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    h1 {
+        color: #2c3e50;
+        text-align: center;
+    }
+    h2 {
+        color: #2c3e50;
+    }
+    pre {
+        background-color: #f4f4f4;
+        font-size: 1rem;
+        padding: 15px;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    span {
+        color:red;
+    }
+    button {
+        margin:3px;
+    padding: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    text-shadow: 0px 0px 2.5px #333;
+    border: none;
+    border-radius: 2px;
+    width: 110px;
+    max-width: 250px;
+    }
+</style>
+<body>
+    <h1 data-translate-key="View Lists">View Lists</h1>
+    <h2 data-translate-key="Inventory">Inventory:</h2>
+    <pre id="objectsList"></pre>
+
+    <h2 data-translate-key="Shopping List">Shopping List:</h2>
+    <pre id="buyItemsList"></pre>
+
+    <button data-translate-key="Back" onclick="window.history.back()">Back</button>
+
+    <script>
+        // Funzione per rileggere la lingua selezionata da localStorage
+        let currentLanguage = localStorage.getItem('selectedLanguage') || 'en';  // Predefinito in inglese
+
+        // Oggetto delle traduzioni
+        const translations = {
+            it: {
+                "View Lists": "Visualizza le Liste",
+                "Inventory": "Inventario",
+                "Shopping List": "Lista della Spesa",
+                "Back": "Indietro",
+                "No items to buy!": "Nessun articolo da comprare!",
+                "No items with expiration found!": "Nessun articolo con scadenza trovato!"
+            },
+            en: {
+                "View Lists": "View Lists",
+                "Inventory": "Inventory",
+                "Shopping List": "Shopping List",
+                "Back": "Back",
+                "No items to buy!": "No items to buy!",
+                "No items with expiration found!": "No items with expiration found!"
+            }
+        };
+
+        // Funzione per applicare le traduzioni
+        function applyTranslations() {
+            document.querySelectorAll("[data-translate-key]").forEach(element => {
+                const key = element.getAttribute("data-translate-key");
+                if (translations[currentLanguage][key]) {
+                    element.textContent = translations[currentLanguage][key]; // Cambia il testo
+                }
+            });
+        }
+
+        // Funzione per visualizzare la lista della spesa
+        function displayBuyItemsList() {
+            const buyItemsListElement = document.getElementById('buyItemsList');
+            if (savedBuyItems.length > 0) {
+                savedBuyItems.forEach(item => {
+                    buyItemsListElement.textContent += `${item}\n`;
+                });
+            } else {
+                buyItemsListElement.textContent = translations[currentLanguage]["No items to buy!"];
+            }
+        }
+
+        // Funzione per visualizzare l'inventario
+function displayObjectsList() {
+    const objectsListElement = document.getElementById('objectsList');
+    if (savedObjects.length > 0) {
+        const groupedObjects = savedObjects.reduce((acc, obj) => {
+            if (acc[obj.name]) {
+                acc[obj.name].quantity += obj.quantity;
+            } else {
+                acc[obj.name] = { ...obj };
+            }
+            return acc;
+        }, {});
+
+        for (let objName in groupedObjects) {
+            const obj = groupedObjects[objName];
+            // Usa innerHTML per aggiungere HTML dinamico
+            objectsListElement.innerHTML += `${objName} <span>${obj.quantity}</span><br>`;
+        }
+    } else {
+        objectsListElement.textContent = translations[currentLanguage]["No items with expiration found!"];
+    }
+}
+
+        // Recupera le liste dal localStorage
+        const savedObjects = JSON.parse(localStorage.getItem("viewListObjects")) || [];
+        const savedBuyItems = JSON.parse(localStorage.getItem("viewListBuyItems")) || [];
+
+        // Visualizza la lista della spesa e l'inventario
+        displayBuyItemsList();
+        displayObjectsList();
+
+        // Applica le traduzioni quando la pagina è pronta
+        document.addEventListener("DOMContentLoaded", () => {
+            applyTranslations();
+        });
+    </script>
+</body>
+</html>
