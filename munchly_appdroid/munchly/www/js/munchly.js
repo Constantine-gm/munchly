@@ -495,11 +495,11 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
             "loginButton": "Accedi",
             "greeting": "Ciao, ",
             "loginPopupTitle": "Accedi al tuo account",
-            "usernamePlaceholder": "Nome Utente",
-            "emailPlaceholder": "Email",
             "loginButtonAction": "Accedi",
             "logoutConfirmation": "Sei sicuro di voler fare il log out?",
             "logoutButton": "Esci",
+            "Username": "Nome Utente",
+            "Email": "Email",
           
         },
         en: {
@@ -530,6 +530,8 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
             "loginButtonAction": "Log In",
             "logoutConfirmation": "Are you sure you want to log out?",
             "logoutButton": "Log Out",
+            "Username": "Username",
+            "Email": "Email",
         }
     };
     
@@ -573,6 +575,11 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
    if (searchBar) searchBar.placeholder = translations[language]["Find Items"];
    const buyItemInput = document.getElementById("buyItemName");
    if (buyItemInput) buyItemInput.placeholder = translations[language]["Insert Items"];
+   const usernameInput = document.getElementById("username");
+   if (usernameInput) usernameInput.placeholder = translations[language]["Username"];
+   
+   const emailInput = document.getElementById("email");
+   if (emailInput) emailInput.placeholder = translations[language]["Email"];
    
    // Ricarica altre informazioni
    loadSuggestions(); 

@@ -213,6 +213,42 @@ window.onload = function() {
                 updateTotals();
         }
     
+
+        // Funzione per suggerire i nomi degli oggetti mentre l'utente digita
+function suggestObjectName() {
+    const inputField = document.getElementById('objectName');
+    const suggestionList = document.getElementById('suggestionList');
+    const name = inputField.value.toLowerCase();  // Prendi il nome dell'oggetto inserito
+
+    if (!name) {
+        suggestionList.innerHTML = ''; // Se il campo è vuoto, nascondi i suggerimenti
+        return;
+    }
+
+    const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
+
+    // Filtra gli oggetti salvati che iniziano con il testo digitato
+    const suggestions = savedObjects
+        .map(obj => obj.name)  // Ottieni i nomi degli oggetti
+        .filter(itemName => itemName.toLowerCase().includes(name))  // Filtra per il testo digitato
+        .slice(0, 5);  // Limita i suggerimenti a 5
+
+    suggestionList.innerHTML = ''; // Pulisce la lista dei suggerimenti
+
+    // Aggiungi i suggerimenti nella lista
+    suggestions.forEach(itemName => {
+        const li = document.createElement('li');
+        li.textContent = itemName;
+        li.onclick = () => {
+            inputField.value = itemName;  // Se l'utente clicca su un suggerimento, lo inserisce nel campo
+            suggestionList.innerHTML = ''; // Pulisce i suggerimenti dopo la selezione
+        };
+        suggestionList.appendChild(li);
+    });
+}
+
+
+
         // Function to add items
         function addObject() {
             const name = document.getElementById('objectName').value;
@@ -246,6 +282,10 @@ window.onload = function() {
               updateTotals();
     
         }
+
+
+// Aggiungi un evento di input per suggerire gli articoli mentre l'utente digita
+document.getElementById('objectName').addEventListener('input', suggestObjectName);
     
         // Function to format data
         function formatDate(dateString) {
@@ -500,6 +540,8 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
             "loginButtonAction": "Accedi",
             "logoutConfirmation": "Sei sicuro di voler fare il log out?",
             "logoutButton": "Esci",
+            "Username": "Nome Utente",
+            "Email": "Email",
           
         },
         en: {
@@ -530,6 +572,8 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
             "loginButtonAction": "Log In",
             "logoutConfirmation": "Are you sure you want to log out?",
             "logoutButton": "Log Out",
+            "Username": "Username",
+            "Email": "Email",
         }
     };
     
@@ -573,6 +617,11 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
    if (searchBar) searchBar.placeholder = translations[language]["Find Items"];
    const buyItemInput = document.getElementById("buyItemName");
    if (buyItemInput) buyItemInput.placeholder = translations[language]["Insert Items"];
+   const usernameInput = document.getElementById("username");
+if (usernameInput) usernameInput.placeholder = translations[language]["Username"];
+
+const emailInput = document.getElementById("email");
+if (emailInput) emailInput.placeholder = translations[language]["Email"];
    
    // Ricarica altre informazioni
    loadSuggestions(); 
