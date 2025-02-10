@@ -1,120 +1,154 @@
-     // JavaScript to toggle the sidebar
-     document.getElementById("show").addEventListener("click", function() {
-        var customBox = document.getElementById("customBox");
-        customBox.classList.toggle("active");
+// JavaScript to toggle the sidebar
+const customBox = document.getElementById("customBox");
+document.getElementById("show").addEventListener("click", function () {
+    customBox.classList.toggle("active");
+});
+
+window.addEventListener("click", function(event){
+    if(!event.target.matches("#customBox *") && !event.target.matches("#show *")){
+        customBox.classList.remove("active")
+    }
+
+})
+
+function updateDeleteButtons() {
+    const deleteButtons = document.querySelectorAll('.deleteBtnStyle');
+    deleteButtons.forEach(button => {
+        button.textContent = translations[currentLanguage]["Delete"];
     });
-    
-    function updateDeleteButtons() {
-        const deleteButtons = document.querySelectorAll('.deleteBtnStyle');
-        deleteButtons.forEach(button => {
-            button.textContent = translations[currentLanguage]["Delete"];
-        });
-        loadBuyItems();
-    }
-    //lOGIN 
+    loadBuyItems();
+}
+   // LOGIN
 
-    const loginBtn = document.getElementById("loginBtn");
-    const profile = document.getElementById("profile");
-    const profileName = document.getElementById("profileName");
-    const loginPopup = document.getElementById("loginPopup");
-    const closeLoginPopup = document.getElementById("closeLoginPopup");
-    const logoutPopup = document.getElementById("logoutPopup");
-    const usernameInput = document.getElementById("username");
-    const emailInput = document.getElementById("email");
-    const closeLogoutPopup = document.getElementById("closeLogoutPopup");
-    
+const loginBtn = document.getElementById("loginBtn");
+const profile = document.getElementById("profile");
+const profileName = document.getElementById("profileName");
+const loginPopup = document.getElementById("loginPopup");
+const closeLoginPopup = document.getElementById("closeLoginPopup");
+const logoutPopup = document.getElementById("logoutPopup");
+const usernameInput = document.getElementById("username");
+const emailInput = document.getElementById("email");
+const closeLogoutPopup = document.getElementById("closeLogoutPopup");
 
-    // Funzione per aprire il popup
-    function openPopup(popupId) {
-      document.getElementById(popupId).style.display = "flex";
-    }
-  
+// Funzione per aprire il popup
+function openPopup(popupId) {
+  document.getElementById(popupId).style.display = "flex";
+}
 
-    // Funzione per chiudere il popup
-    function closePopup(popupId) {
-      document.getElementById(popupId).style.display = "none";
-    }
+// Funzione per chiudere il popup
+function closePopup(popupId) {
+  document.getElementById(popupId).style.display = "none";
+}
 
-    
-    // Funzione di login
-    function login() {
-      const username = usernameInput.value;
-      const email = emailInput.value;
-      if (username && email) {
-        localStorage.setItem("username", username);
-        localStorage.setItem("email", email);
-        closePopup("loginPopup");
-        displayProfile();
-      }
-    }
+// Funzione di login
+function login() {
+  const username = usernameInput.value;
+  const email = emailInput.value;
+  if (username && email) {
+    localStorage.setItem("username", username);
+    localStorage.setItem("email", email);
+    localStorage.setItem("loggedIn", "true");  // Aggiungiamo il flag di login
+    closePopup("loginPopup");
+    displayProfile();
 
-    // Funzione di log out
-    function logout() {
-      localStorage.removeItem("username");
-      localStorage.removeItem("email");
-      closePopup("logoutPopup");
-      displayProfile();
-    }
-
-
- // Funzione per mostrare il profilo utente
-function displayProfile() {
-    const username = localStorage.getItem("username");
-    const greetingText = translations[currentLanguage].greeting; // Ottieni il saluto tradotto
-  
-    if (username) {
-      // Combinare il saluto tradotto con il nome utente e assegnarlo direttamente a profileName
-      document.getElementById('profileName').textContent = greetingText + " " + username;
-  
-      profile.style.display = "block"; // Mostra il profilo
-      loginBtn.style.display = "none"; // Nasconde il bottone login
-      totalsBox.style.display = "block";
-    } else {
-      profile.style.display = "none"; // Nasconde il profilo
-      loginBtn.style.display = "block"; // Mostra il bottone login
-      totalsBox.style.display = "none";
-    }
+      // Carica gli oggetti
+      loadObjects();
   }
+}
 
-    // Mostra il pop-up di logout quando clicchi su "Ciao, Nome Utente"
-    profileName.addEventListener("click", () => {
-      openPopup("logoutPopup");
-    });
+// Funzione di log out
+function logout() {
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
+    localStorage.removeItem("loggedIn"); // Rimuoviamo il flag di login
+    closePopup("logoutPopup");
+    displayProfile();
+  
+    // Ricarica la pagina per riflettere immediatamente lo stato di logout
+    location.reload();  // Questo ricarica la pagina
+  }
+  
+// Funzione per mostrare il profilo utente
+function displayProfile() {
+  const username = localStorage.getItem("username");
+  const greetingText = translations[currentLanguage].greeting; // Ottieni il saluto tradotto
 
-    // Mostra il pop-up di login quando clicchi sul bottone "Login"
-    loginBtn.addEventListener("click", () => {
-      openPopup("loginPopup");
-    });
+  if (username) {
+    // Combinare il saluto tradotto con il nome utente e assegnarlo direttamente a profileName
+    document.getElementById('profileName').textContent = greetingText + " " + username;
 
+    profile.style.display = "block"; // Mostra il profilo
+    loginBtn.style.display = "none"; // Nasconde il bottone login
+    totalsBox.style.display = "block";
+  } else {
+    profile.style.display = "none"; // Nasconde il profilo
+    loginBtn.style.display = "block"; // Mostra il bottone login
+    totalsBox.style.display = "none";
+  }
+}
 
+// Mostra il pop-up di logout quando clicchi su "Ciao, Nome Utente"
+profileName.addEventListener("click", () => {
+  openPopup("logoutPopup");
+});
+
+// Mostra il pop-up di login quando clicchi sul bottone "Login"
+loginBtn.addEventListener("click", () => {
+  openPopup("loginPopup");
+});
 
 // Aggiungi evento per chiudere il pop-up di logout quando clicchi sull'icona X
 closeLogoutPopup.addEventListener("click", function () {
-    closePopup("logoutPopup");
-  });
+  closePopup("logoutPopup");
+});
 
-    // Carica il profilo utente se l'utente è già loggato (senza pop-up di log-out)
-    window.onload = function() {
-      displayProfile();
-      closePopup("logoutPopup");  // Assicurati che il pop-up di log-out sia nascosto
-    };
-  
+// Aggiungi evento per chiudere il pop-up di login quando clicchi sull'icona X
+closeLoginPopup.addEventListener("click", function () {
+  closePopup("loginPopup");
+});
+
+// Imposta showAll su true quando la pagina viene caricata
+window.onload = function() {
+    displayProfile();
+
+
+    // Se l'utente non è loggato e non ha mai effettuato il login, mostra il pop-up di login
+    if (!localStorage.getItem("loggedIn")) {
+        openPopup("loginPopup");
+    } 
+
+    // Assicurati che il pop-up di logout sia nascosto appena la pagina si carica
+    closePopup("logoutPopup");
+
+    // Carica gli oggetti
+    loadObjects();
+};
+
+
     //List
-            let showAll = false;
+        let showAll = false;
         let recentlyDeleted = null;  // Memorize the deleted item and quantity
     
-        // Function for loading the items
         function loadObjects() {
+            // Verifica se l'utente è loggato
+            if (!localStorage.getItem("loggedIn")) {
+              // Se l'utente non è loggato, nascondi la lista degli oggetti
+              const objectList = document.getElementById('objectList');
+              objectList.innerHTML = ''; // Pulisce la lista degli oggetti
+              return; // Non caricare gli oggetti
+            }
+        
+            // Continuare con il caricamento degli oggetti solo se l'utente è loggato
             const savedObjects = JSON.parse(localStorage.getItem('objects')) || [];
             const today = new Date();
             const threeDaysLater = new Date(today);
             threeDaysLater.setDate(today.getDate() + 3);
-    
+        
             savedObjects.sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
-    
+        
             const objectList = document.getElementById('objectList');
             objectList.innerHTML = '';
-    
+        
             savedObjects.forEach((obj) => {
                 const formattedDate = formatDate(obj.expiryDate);
     
@@ -355,6 +389,7 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
             "Spazzola", "Carta igienica", "Detergente", "Shampoo", "Sapone", "Sacca per il lavaggio"
         ]
     };
+
     
     // Function to load suggested items
     function loadSuggestions() {
@@ -365,39 +400,44 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
         // Obtain suggested items in the current language
         const defaultSuggestions = defaultSuggestionsByLanguage[currentLanguage];
         const suggestedItems = new Set(savedBuyItems);
-    
-        // Frequency Map for saved objects
-        const frequencyMap = generateFrequencyMap(savedObjects);
-    
-        // Sort items by frequency and filter out already purchased items
-        const sortedItems = Object.keys(frequencyMap).sort((a, b) => frequencyMap[b] - frequencyMap[a]);
-    
-        // Add sorted items based on frequency first, then default suggestions if needed
-        let suggestionCount = 0;
-        sortedItems.concat(defaultSuggestions).forEach(itemName => {
-            if (suggestionCount >= 7) return; // Stop after 7 items
-    
-            if (!suggestedItems.has(itemName)) {
-                createSuggestionItem(itemName, suggestionList);
-                suggestedItems.add(itemName);
-                suggestionCount++;
-            }
+
+         // Function to generate a frequency map for the saved objects
+    function generateFrequencyMap(savedObjects) {
+        const frequencyMap = new Map();
+        savedObjects.forEach(obj => {
+            frequencyMap.set(obj.name, (frequencyMap.get(obj.name) || 0) + obj.quantity);
         });
+        return frequencyMap;
     }
+    
+    // Frequency Map for saved objects
+    const frequencyMap = generateFrequencyMap(savedObjects);
+
+    
+       // Sort items by frequency in descending order
+    const sortedItems = Array.from(frequencyMap.entries())
+    .sort((a, b) => b[1] - a[1]) // Sort by quantity (value of the map)
+    .map(entry => entry[0]); // Extract just the item names
+    
+     // Add sorted items based on frequency first, then default suggestions if needed
+     let suggestionCount = 0;
+     sortedItems.concat(defaultSuggestions).forEach(itemName => {
+         if (suggestionCount >= 7) return; // Stop after 7 items
+ 
+         if (!suggestedItems.has(itemName)) {
+             createSuggestionItem(itemName, suggestionList);
+             suggestedItems.add(itemName);
+             suggestionCount++;
+         }
+     });
+ }
+ 
     
     // Function to load saved objects and buy items from localStorage
     function loadSavedData() {
         const savedObjects = JSON.parse(localStorage.getItem("objects")) || [];
         const savedBuyItems = JSON.parse(localStorage.getItem("buyItems")) || [];
         return { savedObjects, savedBuyItems };
-    }
-    
-    // Function to generate a frequency map for the saved objects
-    function generateFrequencyMap(savedObjects) {
-        return savedObjects.reduce((acc, obj) => {
-            acc[obj.name] = (acc[obj.name] || 0) + obj.quantity;
-            return acc;
-        }, {});
     }
     
     // Function to create a suggestion item in the UI
@@ -431,13 +471,6 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
     
     
     
-    
-    const languageTranslations = {
-        Suggestions: { en: "Suggestions", it: "Suggerimenti" },
-        Add: { en: "Add", it: "Aggiungi" },
-        // Altri tasti di traduzione...
-    };
-    
     const translations = {
         it: {
             "Dark Mode": "Modalità Scura",
@@ -451,7 +484,7 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
             "Expiry": "Scadenza",
             "Delete": "Elimina",
             "Expiry List": "Lista Scadenze",
-            "To Buy List": "Lista da Comprare",
+            "Shopping List": "Lista della Spesa",
             "Suggestions": "Suggerimenti",
             "Add": "Aggiungi",
             "Find Items": "Trova Articoli",
@@ -481,7 +514,7 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
             "Expiry": "Expiry",
             "Delete": "Delete",
             "Expiry List": "Expiry List",
-            "To Buy List": "To Buy List",
+            "Shopping List": "Shopping List",
             "Suggestions": "Suggestions",
             "Add": "Add",
             "Find Items": "Find Items",
@@ -500,10 +533,12 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
         }
     };
     
+
+         let currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
     document.addEventListener('DOMContentLoaded', () => {
         // Recupera la lingua salvata in localStorage, altrimenti usa 'en' come predefinito
-        let currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
-    
+
+
         // Applica la lingua salvata
         changeLanguage(currentLanguage);
     });
