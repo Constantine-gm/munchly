@@ -389,6 +389,7 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
             "Spazzola", "Carta igienica", "Detergente", "Shampoo", "Sapone", "Sacca per il lavaggio"
         ]
     };
+
     
     // Function to load suggested items
     function loadSuggestions() {
@@ -399,39 +400,44 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
         // Obtain suggested items in the current language
         const defaultSuggestions = defaultSuggestionsByLanguage[currentLanguage];
         const suggestedItems = new Set(savedBuyItems);
-    
-        // Frequency Map for saved objects
-        const frequencyMap = generateFrequencyMap(savedObjects);
-    
-        // Sort items by frequency and filter out already purchased items
-        const sortedItems = Object.keys(frequencyMap).sort((a, b) => frequencyMap[b] - frequencyMap[a]);
-    
-        // Add sorted items based on frequency first, then default suggestions if needed
-        let suggestionCount = 0;
-        sortedItems.concat(defaultSuggestions).forEach(itemName => {
-            if (suggestionCount >= 7) return; // Stop after 7 items
-    
-            if (!suggestedItems.has(itemName)) {
-                createSuggestionItem(itemName, suggestionList);
-                suggestedItems.add(itemName);
-                suggestionCount++;
-            }
+
+         // Function to generate a frequency map for the saved objects
+    function generateFrequencyMap(savedObjects) {
+        const frequencyMap = new Map();
+        savedObjects.forEach(obj => {
+            frequencyMap.set(obj.name, (frequencyMap.get(obj.name) || 0) + obj.quantity);
         });
+        return frequencyMap;
     }
+    
+    // Frequency Map for saved objects
+    const frequencyMap = generateFrequencyMap(savedObjects);
+
+    
+       // Sort items by frequency in descending order
+    const sortedItems = Array.from(frequencyMap.entries())
+    .sort((a, b) => b[1] - a[1]) // Sort by quantity (value of the map)
+    .map(entry => entry[0]); // Extract just the item names
+    
+     // Add sorted items based on frequency first, then default suggestions if needed
+     let suggestionCount = 0;
+     sortedItems.concat(defaultSuggestions).forEach(itemName => {
+         if (suggestionCount >= 7) return; // Stop after 7 items
+ 
+         if (!suggestedItems.has(itemName)) {
+             createSuggestionItem(itemName, suggestionList);
+             suggestedItems.add(itemName);
+             suggestionCount++;
+         }
+     });
+ }
+ 
     
     // Function to load saved objects and buy items from localStorage
     function loadSavedData() {
         const savedObjects = JSON.parse(localStorage.getItem("objects")) || [];
         const savedBuyItems = JSON.parse(localStorage.getItem("buyItems")) || [];
         return { savedObjects, savedBuyItems };
-    }
-    
-    // Function to generate a frequency map for the saved objects
-    function generateFrequencyMap(savedObjects) {
-        return savedObjects.reduce((acc, obj) => {
-            acc[obj.name] = (acc[obj.name] || 0) + obj.quantity;
-            return acc;
-        }, {});
     }
     
     // Function to create a suggestion item in the UI
@@ -465,13 +471,6 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
     
     
     
-    
-    const languageTranslations = {
-        Suggestions: { en: "Suggestions", it: "Suggerimenti" },
-        Add: { en: "Add", it: "Aggiungi" },
-        // Altri tasti di traduzione...
-    };
-    
     const translations = {
         it: {
             "Dark Mode": "Modalità Scura",
@@ -485,7 +484,7 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
             "Expiry": "Scadenza",
             "Delete": "Elimina",
             "Expiry List": "Lista Scadenze",
-            "To Buy List": "Lista da Comprare",
+            "Shopping List": "Lista della Spesa",
             "Suggestions": "Suggerimenti",
             "Add": "Aggiungi",
             "Find Items": "Trova Articoli",
@@ -515,7 +514,7 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
             "Expiry": "Expiry",
             "Delete": "Delete",
             "Expiry List": "Expiry List",
-            "To Buy List": "To Buy List",
+            "Shopping List": "Shopping List",
             "Suggestions": "Suggestions",
             "Add": "Add",
             "Find Items": "Find Items",
@@ -535,7 +534,7 @@ document.getElementById('buyItemName').addEventListener('focus', function() {
     };
     
 
-    let currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
+         let currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
     document.addEventListener('DOMContentLoaded', () => {
         // Recupera la lingua salvata in localStorage, altrimenti usa 'en' come predefinito
 
