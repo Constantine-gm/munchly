@@ -451,6 +451,7 @@ img:not(#language-icon):hover {
     color: #0d616f;
     font-weight: bold;
     height: 20%;
+    margin-bottom: 20px;
 
 }
 .line {
@@ -750,6 +751,7 @@ right:3px;
         width: 50%;
         max-width: 150px;
         height:10px;
+        margin-bottom: 20px;
     }
 
 .box {
