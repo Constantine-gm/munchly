@@ -419,6 +419,13 @@ img:not(#language-icon):hover {
     display: flex; 
     justify-content: center; 
 }
+
+.htit {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 /* Main Contents */
 .title {
     font-family: "Sulphur Point", sans-serif;
@@ -427,17 +434,16 @@ img:not(#language-icon):hover {
     text-shadow: 0 0px 5px rgba(184, 240, 255, 100);
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-top: 20px;
+    height:80%;
+    margin-top:10px;
 }
 
 /* Logo */
 .title img {
-   max-width: 100vw;
     animation: floatUpDown 1.5s ease-in-out infinite;
 
 }
 #searchBar {
-    padding: 6px;
     font-size: 0.8rem;
     max-width: 150px;
     border: 1px solid grey;
@@ -445,8 +451,9 @@ img:not(#language-icon):hover {
     border-radius: 6px;
     color: #0d616f;
     font-weight: bold;
-    margin-top: 30px;
-    height: 1rem;
+    margin-top: 20px;
+    height: 20%;
+    margin-bottom: 8px;
 
 }
 .line {
@@ -741,11 +748,12 @@ right:3px;
 
     #searchBar {
         position:relative;
-    left:20px;
-        margin-top:10px;
+         left:20px;
+        margin-top:20px;
         width: 50%;
         max-width: 150px;
         height:10px;
+        margin-bottom: 10px;
     }
 
 .box {
