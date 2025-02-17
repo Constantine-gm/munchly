@@ -1,5 +1,6 @@
-const fs = require("fs"); // Modulo per interagire con il filesystem
-const xml2js = require("xml2js"); // Modulo per manipolare XML
+import fs from "fs"; // Modulo per interagire con il filesystem
+import xml2js from "xml2js"; // Modulo per manipolare XML
+
 const parser = new xml2js.Parser(); // Parser per leggere XML
 const builder = new xml2js.Builder(); // Builder per scrivere XML
 
