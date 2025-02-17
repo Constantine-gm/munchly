@@ -41,6 +41,10 @@
       width: 110px;
       max-width: 250px;
     }
+    /* Stilizzazione per nascondere le sezioni vuote */
+    .priority-section {
+      display: none;
+    }
   </style>
   <body>
     <h1 data-translate-key="View Lists">View Lists</h1>
@@ -48,7 +52,17 @@
     <pre id="objectsList"></pre>
 
     <h2 data-translate-key="Shopping List">Shopping List:</h2>
-    <pre id="buyItemsList"></pre>
+    <div id="buyItemsList">
+      <!-- Sezioni della lista della spesa -->
+      <p id="highPriorityTitle">High Priority (🔴)</p>
+      <pre id="highPriorityItems" class="priority-section"></pre>
+
+      <p id="mediumPriorityTitle">Medium Priority (🟡)</p>
+      <pre id="mediumPriorityItems" class="priority-section"></pre>
+
+      <p id="nonePriorityTitle">None (No Priority)</p>
+      <pre id="nonePriorityItems" class="priority-section"></pre>
+    </div>
 
     <button data-translate-key="Back" onclick="window.history.back()">
       Back
@@ -89,15 +103,60 @@
         });
       }
 
-      // Funzione per visualizzare la lista della spesa
+      // Funzione per visualizzare la lista della spesa divisa per priorità
       function displayBuyItemsList() {
-        const buyItemsListElement = document.getElementById("buyItemsList");
+        const highPriorityItemsElement =
+          document.getElementById("highPriorityItems");
+        const mediumPriorityItemsElement = document.getElementById(
+          "mediumPriorityItems"
+        );
+        const nonePriorityItemsElement =
+          document.getElementById("nonePriorityItems");
+
+        const highPriorityItems = [];
+        const mediumPriorityItems = [];
+        const nonePriorityItems = [];
+
+        // Raggruppa gli oggetti per priorità
         if (savedBuyItems.length > 0) {
           savedBuyItems.forEach((item) => {
-            buyItemsListElement.textContent += `${item}\n`;
+            if (item.priority === "high") {
+              highPriorityItems.push(item.name);
+            } else if (item.priority === "medium") {
+              mediumPriorityItems.push(item.name);
+            } else {
+              nonePriorityItems.push(item.name);
+            }
           });
+
+          // Aggiorna le sezioni con gli oggetti corrispondenti
+          if (highPriorityItems.length > 0) {
+            highPriorityItemsElement.textContent = highPriorityItems.join("\n");
+            document.getElementById("highPriorityTitle").style.display =
+              "block";
+            highPriorityItemsElement.style.display = "block";
+          }
+
+          if (mediumPriorityItems.length > 0) {
+            mediumPriorityItemsElement.textContent =
+              mediumPriorityItems.join("\n");
+            document.getElementById("mediumPriorityTitle").style.display =
+              "block";
+            mediumPriorityItemsElement.style.display = "block";
+          }
+
+          if (nonePriorityItems.length > 0) {
+            nonePriorityItemsElement.textContent = nonePriorityItems.join("\n");
+            document.getElementById("nonePriorityTitle").style.display =
+              "block";
+            nonePriorityItemsElement.style.display = "block";
+          }
         } else {
-          buyItemsListElement.textContent =
+          highPriorityItemsElement.textContent =
+            translations[currentLanguage]["No items to buy!"];
+          mediumPriorityItemsElement.textContent =
+            translations[currentLanguage]["No items to buy!"];
+          nonePriorityItemsElement.textContent =
             translations[currentLanguage]["No items to buy!"];
         }
       }
