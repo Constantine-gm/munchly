@@ -806,27 +806,44 @@ function updatePageText(language) {
 // Funzione per aggiornare i placeholder dinamicamente
 function updatePlaceholders(language) {
   const searchBar = document.getElementById("searchBar");
-  if (searchBar)
+  if (searchBar) {
     searchBar.placeholder =
-      translations[language]["Find Items"] || "Find Items";
+      (translations[language] && translations[language]["Find Items"]) ||
+      "Find Items";
+  }
 
   const buyItemInput = document.getElementById("buyItemName");
-  if (buyItemInput)
+  if (buyItemInput) {
     buyItemInput.placeholder =
-      translations[language]["Add Items"] || "Add Items";
+      (translations[language] && translations[language]["Add Items"]) ||
+      "Add Items";
+  }
 
   const objectName = document.getElementById("objectName");
-  if (objectName)
-    objectName.placeholder = translations[language]["Add"] || "Aggiungi";
+  if (objectName) {
+    objectName.placeholder =
+      (translations[language] && translations[language]["Add"]) || "Aggiungi";
+  }
 
   const usernameInput = document.getElementById("username");
-  if (usernameInput)
-    usernameInput.placeholder =
-      translations[language]["Username"] || "Username";
+  if (usernameInput) {
+    // Verifica che translations[language] sia un oggetto valido e contenga la chiave "Username"
+    if (translations[language] && translations[language]["Username"]) {
+      usernameInput.placeholder = translations[language]["Username"];
+    } else {
+      usernameInput.placeholder = "Username"; // Fallback sicuro
+    }
+  }
 
   const emailInput = document.getElementById("email");
-  if (emailInput)
-    emailInput.placeholder = translations[language]["Email"] || "Email";
+  if (emailInput) {
+    // Verifica che translations[language] sia un oggetto valido e contenga la chiave "Email"
+    if (translations[language] && translations[language]["Email"]) {
+      emailInput.placeholder = translations[language]["Email"];
+    } else {
+      emailInput.placeholder = "Email"; // Fallback sicuro
+    }
+  }
 }
 
 // Aggiungi un evento al pulsante di cambio lingua
