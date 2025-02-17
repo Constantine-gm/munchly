@@ -75,11 +75,17 @@ function displayProfile() {
   // Recupera il nome utente da localStorage e gestisce il caso in cui non esista
   const username = localStorage.getItem("username");
 
-  // Verifica che la traduzione del saluto sia presente per la lingua attuale
-  const greetingText =
-    translations[currentLanguage] && translations[currentLanguage].greeting
-      ? translations[currentLanguage].greeting
-      : "Ciao"; // Fallback a "Ciao" se la traduzione non è trovata
+  // Verifica se l'oggetto delle traduzioni per la lingua selezionata è valido
+  const isValidTranslation =
+    translations[currentLanguage] &&
+    typeof translations[currentLanguage] === "object" &&
+    translations[currentLanguage] !== null &&
+    translations[currentLanguage].greeting;
+
+  // Assegna il saluto, con un fallback a "Ciao" se non è valido
+  const greetingText = isValidTranslation
+    ? translations[currentLanguage].greeting
+    : "Ciao"; // Fallback a "Ciao" se la traduzione non è trovata
 
   // Recupera gli elementi DOM, assicurandosi che esistano
   const profile = document.getElementById("profile");
