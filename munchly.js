@@ -396,47 +396,13 @@ function addItemToBuyListWithPriority(itemName, priority) {
   localStorage.setItem("buyItems", JSON.stringify(savedBuyItems));
 }
 
-// Function to add item to the list "To Buy"
-function addBuyItem() {
-  const buyItemName = document.getElementById("buyItemName").value;
-  const inputField = document.getElementById("buyItemName"); // Get the input field
-
-  if (!buyItemName) {
-    alert("Insert name of the item to buy");
-    return;
-  }
-
-  const savedBuyItems = JSON.parse(localStorage.getItem("buyItems")) || [];
-
-  // Check if the item is already in the list
-  if (savedBuyItems.includes(buyItemName)) {
-    // Add error class to input field
-    inputField.classList.add("input-error");
-    return; // Don't add the item if it's already in the list
-  }
-
-  // Remove error class if the input is valid
-  inputField.classList.remove("input-error");
-
-  savedBuyItems.push(buyItemName);
-  localStorage.setItem("buyItems", JSON.stringify(savedBuyItems));
-
-  inputField.value = ""; // Svuota il campo di input
-  document.getElementById("itemPriority").value = "";
-
-  loadBuyItems();
-  updateTotals();
-}
-// Aggiungi un evento di focus per rimuovere il bordo rosso quando l'utente modifica l'input
-document.getElementById("buyItemName").addEventListener("focus", function () {
-  this.classList.remove("input-error"); // Rimuove il bordo rosso quando l'utente interagisce con l'input
-});
 // Funzione per aggiungere un elemento alla lista "To Buy"
 function addBuyItem() {
   const buyItemName = document.getElementById("buyItemName").value;
   const inputField = document.getElementById("buyItemName"); // Campo di input
   const itemPriority = document.getElementById("itemPriority").value; // Priorità selezionata
 
+  // Verifica che il campo nome non sia vuoto
   if (!buyItemName) {
     alert("Inserisci il nome dell'oggetto da acquistare");
     return;
@@ -452,12 +418,15 @@ function addBuyItem() {
 
   inputField.classList.remove("input-error"); // Rimuovi classe di errore se valido
 
+  // Se la priorità è "none" (nessuna priorità), aggiungi l'oggetto con priorità "none"
+  const priority = itemPriority === "none" ? "none" : itemPriority;
+
   // Aggiungi l'oggetto con la priorità (creiamo un oggetto con nome e priorità)
-  savedBuyItems.push({ name: buyItemName, priority: itemPriority });
+  savedBuyItems.push({ name: buyItemName, priority: priority });
   localStorage.setItem("buyItems", JSON.stringify(savedBuyItems));
 
   inputField.value = ""; // Svuota il campo di input
-  document.getElementById("itemPriority").value = "none"; // Resetta la priorità
+  document.getElementById("itemPriority").value = "none"; // Resetta la priorità a "none"
 
   loadBuyItems(); // Ricarica gli oggetti
   updateTotals(); // (Assumendo che questa funzione esista, è facoltativa)
@@ -507,8 +476,6 @@ function loadBuyItems() {
 
     buyItemList.appendChild(tr);
   });
-
-  document.getElementById("itemPriority").value = "";
 }
 
 // Funzione per rimuovere un oggetto dalla lista
@@ -668,7 +635,6 @@ const translations = {
       "Inserisci nome e data di scadenza dell'articolo.",
     "Insert name of the item to buy":
       "Inserisci il nome dell'articolo da comprare",
-    "Add Item": "Aggiungi",
     Export: "Esporta",
     loginButton: "Accedi",
     greeting: "Ciao, ",
@@ -706,7 +672,6 @@ const translations = {
     "Add Items": "Add Items",
     "Insert item name and expiry date.": "Insert item name and expiry date.",
     "Insert name of the item to buy": "Insert name of the item to buy",
-    "Add Item": "Add Item",
     Export: "Export",
     loginButton: "Login",
     greeting: "Hello, ",
@@ -718,7 +683,7 @@ const translations = {
     logoutButton: "Log Out",
     Username: "Username",
     Email: "Email",
-    priority: "Priority",
+    priority: "Priorità",
     "select priority": " Select Priority",
     confirm: "Confirm",
     cancel: "Cancel",
@@ -762,14 +727,13 @@ function changeLanguage(language) {
   // Cambia i placeholder dinamicamente
   const searchBar = document.getElementById("searchBar");
   if (searchBar) searchBar.placeholder = translations[language]["Find Items"];
-  const objectName = document.getElementById("objectName");
-  if (objectName) objectName.placeholder = translations[language]["Add Item"];
   const buyItemInput = document.getElementById("buyItemName");
   if (buyItemInput)
-    buyItemInput.placeholder = translations[language]["Insert Items"];
+    buyItemInput.placeholder = translations[language]["Add Items"];
   const usernameInput = document.getElementById("username");
   if (usernameInput)
     usernameInput.placeholder = translations[language]["Username"];
+
   const emailInput = document.getElementById("email");
   if (emailInput) emailInput.placeholder = translations[language]["Email"];
 

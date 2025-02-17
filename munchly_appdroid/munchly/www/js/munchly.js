@@ -246,6 +246,103 @@ function suggestObjectName() {
   });
 }
 
+// Function to add items
+function addObject() {
+  const name = document.getElementById("objectName").value;
+  const expiryDate = document.getElementById("expiryDate").value;
+  const quantity = parseInt(document.getElementById("quantity").value) || 1;
+
+  if (!name || !expiryDate) {
+    alert("Insert item name and expiry date.");
+    return;
+  }
+
+  const savedObjects = JSON.parse(localStorage.getItem("objects")) || [];
+
+  // Generates an unique ID for each items
+  const newObject = {
+    id: Date.now(),
+    name,
+    expiryDate,
+    quantity,
+  };
+
+  savedObjects.push(newObject);
+  localStorage.setItem("objects", JSON.stringify(savedObjects));
+
+  document.getElementById("objectName").value = "";
+  document.getElementById("expiryDate").value = "";
+  document.getElementById("quantity").value = "";
+
+  loadObjects();
+  // Aggiorna il totale dei prodotti
+  updateTotals();
+}
+
+// Aggiungi un evento di input per suggerire gli articoli mentre l'utente digita
+document
+  .getElementById("objectName")
+  .addEventListener("input", suggestObjectName);
+
+// Function to format data
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("it-IT");
+}
+
+// Function for deleting items.
+function deleteObject(id) {
+  const savedObjects = JSON.parse(localStorage.getItem("objects")) || [];
+
+  //Finds an item to delete
+  const objectToDelete = savedObjects.find((obj) => obj.id === id);
+  if (objectToDelete && objectToDelete.quantity > 1) {
+    // Memorize the deleted item and quantity
+    recentlyDeleted = { ...objectToDelete, quantity: 1 }; // Saves the item to restore with quantity (with quantity 1)
+
+    // Reduce quantity to 1
+    objectToDelete.quantity -= 1;
+
+    //  Save the updated array
+    localStorage.setItem("objects", JSON.stringify(savedObjects));
+    loadObjects();
+  } else if (objectToDelete) {
+    // If quantity is 1, removes the item
+    recentlyDeleted = objectToDelete; // Saves the item to restore
+    const updatedObjects = savedObjects.filter((obj) => obj.id !== id);
+    localStorage.setItem("objects", JSON.stringify(updatedObjects));
+    loadObjects();
+    updateTotals();
+  }
+}
+
+// Function to restore deleted item
+function restoreDeletedObject() {
+  if (recentlyDeleted) {
+    const savedObjects = JSON.parse(localStorage.getItem("objects")) || [];
+
+    // If an item with quantity > 1 is deleted, the item with that quantity is restored
+    const objectToRestore = savedObjects.find(
+      (obj) => obj.id === recentlyDeleted.id
+    );
+    if (objectToRestore) {
+      objectToRestore.quantity += recentlyDeleted.quantity; // Ripristina la quantità eliminata
+    } else {
+      // If it doesn't exist, adds the item with its original quantity
+      savedObjects.push(recentlyDeleted);
+    }
+
+    // Saves the updated array
+    localStorage.setItem("objects", JSON.stringify(savedObjects));
+
+    recentlyDeleted = null; // Reset of the variable
+
+    loadObjects();
+    // Aggiorna il totale dei prodotti
+    updateTotals();
+  }
+}
+
 // Variabile per memorizzare l'elemento che stiamo aggiungendo
 let itemNameToAdd = "";
 
