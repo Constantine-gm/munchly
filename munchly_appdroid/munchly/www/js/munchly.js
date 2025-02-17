@@ -669,7 +669,7 @@ function changeLanguage(language) {
   if (objectName) objectName.placeholder = translations[language]["Add Item"];
   const buyItemInput = document.getElementById("buyItemName");
   if (buyItemInput)
-    buyItemInput.placeholder = translations[language]["Insert Items"];
+    buyItemInput.placeholder = translations[language]["Add Items"];
   const usernameInput = document.getElementById("username");
   if (usernameInput)
     usernameInput.placeholder = translations[language]["Username"];
