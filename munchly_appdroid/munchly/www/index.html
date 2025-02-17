@@ -124,10 +124,18 @@
     </table>
 </div>
 <div class="b1">
-    <h2 class="title3" data-translate-key="Shopping List">Shopping List</h2>
-    <input class="buy" type="text" id="buyItemName" placeholder="Insert Items" data-translate-key="Insert Items"/>
+    
+  <h2 class="title3" data-translate-key="Shopping List">Shopping List</h2>
+    <div class="boxbuy">
+    <input class="buy" type="text" id="buyItemName" placeholder="Add Items" data-translate-key="Insert Items"/>
+     <label for="itemPriority" data-translate-key="priority">Priority:</label>
+<select id="itemPriority">
+    <option value="high">🔴</option>
+    <option value="low">🟡</option>
+</select>
     <button onclick="addBuyItem()" data-translate-key="Add">Add</button>
-
+    </div>
+  
     <table id="buyItemTable">
         <thead>
             <tr>
@@ -142,6 +150,21 @@
         <ul id="suggestionList">
         </ul>
     </div>
+</div>
+
+<!-- Modal for Priority Selection -->
+<div id="priorityModal" class="modal">
+  <div class="modal-content">
+    <h2 data-translate-key="select priority">Select Priority</h2>
+    <label>
+      <input type="checkbox" id="highPriority" data-translate-key="high"> Alta (🔴)
+    </label><br>
+    <label>
+      <input type="checkbox" id="mediumPriority" data-translate-key="medium"> Media (🟡)
+    </label><br>
+    <button onclick="confirmPriority()" data-translate-key="confirm">Confirm</button>
+    <button onclick="closePriorityModal()" data-translate-key="cancel">Cancel</button>
+  </div>
 </div>
 <script src="js/munchly.js"></script>
 </body>
