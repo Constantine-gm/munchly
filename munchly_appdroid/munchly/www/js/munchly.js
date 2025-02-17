@@ -77,7 +77,9 @@ function displayProfile() {
 
   // Verifica che la traduzione del saluto sia presente per la lingua attuale
   const greetingText =
-    translations[currentLanguage] && translations[currentLanguage].greeting
+    translations[currentLanguage] &&
+    typeof translations[currentLanguage] === "object" &&
+    translations[currentLanguage].greeting
       ? translations[currentLanguage].greeting
       : "Ciao"; // Fallback a "Ciao" se la traduzione non è trovata
 
