@@ -612,7 +612,6 @@ function addItemToBuyList(itemName) {
   // Clear the input field
   document.getElementById("buyItemName").value = "";
 }
-
 const translations = {
   it: {
     "Dark Mode": "Modalità Scura",
@@ -683,7 +682,7 @@ const translations = {
     logoutButton: "Log Out",
     Username: "Username",
     Email: "Email",
-    priority: "Priorità",
+    priority: "Priority",
     "select priority": " Select Priority",
     confirm: "Confirm",
     cancel: "Cancel",
@@ -693,14 +692,28 @@ const translations = {
 };
 
 let currentLanguage = localStorage.getItem("selectedLanguage") || "en";
+
+// Limita le lingue supportate
+const supportedLanguages = ["en", "it"];
+if (!supportedLanguages.includes(currentLanguage)) {
+  currentLanguage = "en"; // Imposta "en" come lingua predefinita in caso di valore non valido
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // Recupera la lingua salvata in localStorage, altrimenti usa 'en' come predefinito
-
   // Applica la lingua salvata
   changeLanguage(currentLanguage);
 });
 
 function changeLanguage(language) {
+  // Limita la lingua a quelle supportate
+  if (!supportedLanguages.includes(language)) {
+    console.warn(
+      `Lingua non supportata: ${language}, usa la lingua predefinita "en"`
+    );
+    language = "en"; // Imposta "en" come lingua di fallback
+  }
+
   currentLanguage = language;
   localStorage.setItem("selectedLanguage", language);
 
@@ -719,23 +732,39 @@ function changeLanguage(language) {
   // Cambia il testo degli elementi sulla pagina in base alla lingua selezionata
   document.querySelectorAll("[data-translate-key]").forEach((element) => {
     const key = element.getAttribute("data-translate-key");
-    if (translations[language][key]) {
+
+    // Verifica se la chiave esiste in translations[language]
+    if (Object.hasOwn(translations[language], key)) {
       element.textContent = translations[language][key];
+    } else {
+      console.warn(
+        `Chiave di traduzione non trovata per ${key} in ${language}`
+      );
+      element.textContent = key; // Usa la chiave come fallback
     }
   });
 
   // Cambia i placeholder dinamicamente
   const searchBar = document.getElementById("searchBar");
-  if (searchBar) searchBar.placeholder = translations[language]["Find Items"];
+  if (searchBar)
+    searchBar.placeholder =
+      translations[language]["Find Items"] || "Find Items";
   const buyItemInput = document.getElementById("buyItemName");
+  const objectName = document.getElementById("objectName");
+  if (objectName)
+    objectName.placeholder = translations[language]["Add"] || "Aggiungi";
   if (buyItemInput)
-    buyItemInput.placeholder = translations[language]["Add Items"];
+    buyItemInput.placeholder =
+      translations[language]["Add Items"] || "Add Items";
+
   const usernameInput = document.getElementById("username");
   if (usernameInput)
-    usernameInput.placeholder = translations[language]["Username"];
+    usernameInput.placeholder =
+      translations[language]["Username"] || "Username";
 
   const emailInput = document.getElementById("email");
-  if (emailInput) emailInput.placeholder = translations[language]["Email"];
+  if (emailInput)
+    emailInput.placeholder = translations[language]["Email"] || "Email";
 
   // Ricarica altre informazioni
   loadSuggestions();
