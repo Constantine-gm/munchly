@@ -72,28 +72,58 @@ function logout() {
 
 // Funzione per mostrare il profilo utente
 function displayProfile() {
+  // Recupera il nome utente da localStorage e gestisce il caso in cui non esista
   const username = localStorage.getItem("username");
-  const greetingText = translations[currentLanguage].greeting; // Ottieni il saluto tradotto
 
-  if (username) {
-    // Combinare il saluto tradotto con il nome utente e assegnarlo direttamente a profileName
-    document.getElementById("profileName").textContent =
-      greetingText + " " + username;
+  // Verifica che la traduzione del saluto sia presente per la lingua attuale
+  const greetingText =
+    translations[currentLanguage] && translations[currentLanguage].greeting
+      ? translations[currentLanguage].greeting
+      : "Ciao"; // Fallback a "Ciao" se la traduzione non è trovata
 
-    profile.style.display = "block"; // Mostra il profilo
-    loginBtn.style.display = "none"; // Nasconde il bottone login
-    totalsBox.style.display = "block";
+  // Recupera gli elementi DOM, assicurandosi che esistano
+  const profile = document.getElementById("profile");
+  const loginBtn = document.getElementById("loginBtn");
+  const totalsBox = document.getElementById("totalsBox");
+  const profileName = document.getElementById("profileName");
+
+  if (profile && loginBtn && totalsBox && profileName) {
+    if (username) {
+      // Combina il saluto tradotto con il nome utente e assegnalo al profilo
+      profileName.textContent = `${greetingText} ${sanitizeText(username)}`;
+
+      // Mostra il profilo e nasconde il bottone di login
+      profile.style.display = "block";
+      loginBtn.style.display = "none";
+      totalsBox.style.display = "block";
+    } else {
+      // Se non ci sono dati utente, nascondi il profilo e mostra il bottone di login
+      profile.style.display = "none";
+      loginBtn.style.display = "block";
+      totalsBox.style.display = "none";
+    }
   } else {
-    profile.style.display = "none"; // Nasconde il profilo
-    loginBtn.style.display = "block"; // Mostra il bottone login
-    totalsBox.style.display = "none";
+    console.error("Errore: uno o più elementi DOM non sono stati trovati.");
   }
 }
 
+// Funzione per "sanitizzare" i dati dell'utente e prevenire potenziali vulnerabilità
+function sanitizeText(text) {
+  if (text && typeof text === "string") {
+    // Crea un elemento DOM temporaneo per sanificare il testo
+    const tempElement = document.createElement("div");
+    tempElement.textContent = text; // Imposta il testo per l'elemento
+    return tempElement.innerHTML; // Ritorna il testo sicuro
+  }
+  return text; // Se non è una stringa valida, restituisci il testo così com'è
+}
+
 // Mostra il pop-up di logout quando clicchi su "Ciao, Nome Utente"
-profileName.addEventListener("click", () => {
-  openPopup("logoutPopup");
-});
+if (profileName) {
+  profileName.addEventListener("click", () => {
+    openPopup("logoutPopup");
+  });
+}
 
 // Mostra il pop-up di login quando clicchi sul bottone "Login"
 loginBtn.addEventListener("click", () => {
@@ -250,7 +280,7 @@ function suggestObjectName() {
 function addObject() {
   const name = document.getElementById("objectName").value;
   const expiryDate = document.getElementById("expiryDate").value;
-  const quantity = parseInt(document.getElementById("quantity").value) || 1;
+  const quantity = parseInt(document.getElementById("quantity").value, 10) || 1;
 
   if (!name || !expiryDate) {
     alert("Insert item name and expiry date.");
@@ -690,72 +720,104 @@ const translations = {
     "medium ": "Medium (🟡)",
   },
 };
-
+// Definisci le lingue supportate
+const supportedLanguages = ["en", "it"];
 let currentLanguage = localStorage.getItem("selectedLanguage") || "en";
 
-// Limita le lingue supportate
-const supportedLanguages = ["en", "it"];
+// Verifica se la lingua selezionata è valida, altrimenti imposta la lingua predefinita
 if (!supportedLanguages.includes(currentLanguage)) {
-  currentLanguage = "en"; // Imposta "en" come lingua predefinita in caso di valore non valido
+  console.warn(
+    `Lingua non valida rilevata in localStorage, uso "en" come predefinito.`
+  );
+  currentLanguage = "en";
+  localStorage.setItem("selectedLanguage", currentLanguage); // Salva la lingua predefinita
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Recupera la lingua salvata in localStorage, altrimenti usa 'en' come predefinito
-  // Applica la lingua salvata
-  changeLanguage(currentLanguage);
-});
-
+// Funzione per cambiare la lingua
 function changeLanguage(language) {
   // Limita la lingua a quelle supportate
   if (!supportedLanguages.includes(language)) {
     console.warn(
-      `Lingua non supportata: ${language}, usa la lingua predefinita "en"`
+      `Lingua non supportata: ${language}. Uso "en" come lingua di fallback.`
     );
     language = "en"; // Imposta "en" come lingua di fallback
   }
 
   currentLanguage = language;
-  localStorage.setItem("selectedLanguage", language);
+  localStorage.setItem("selectedLanguage", language); // Salva la lingua selezionata
 
   // Cambia l'icona della lingua in base alla lingua selezionata
-  const languageIcon = document.getElementById("language-icon");
-  if (language === "it") {
-    languageIcon.src =
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/1500px-Flag_of_Italy.svg.png";
-    languageIcon.alt = "Italian Flag";
-  } else if (language === "en") {
-    languageIcon.src =
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg/1200px-Flag_of_the_United_Kingdom_%283-5%29.svg.png";
-    languageIcon.alt = "English Flag";
-  }
+  updateLanguageIcon(language);
 
-  // Cambia il testo degli elementi sulla pagina in base alla lingua selezionata
+  // Cambia il testo degli elementi sulla pagina
+  updatePageText(language);
+
+  // Cambia i placeholder dinamicamente
+  updatePlaceholders(language);
+
+  // Ricarica altre informazioni
+  loadSuggestions();
+  updateDeleteButtons();
+  displayProfile();
+  updateTotals();
+}
+
+// Funzione per cambiare l'icona della lingua
+function updateLanguageIcon(language) {
+  const languageIcon = document.getElementById("language-icon");
+  if (languageIcon) {
+    if (language === "it") {
+      languageIcon.src =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/1500px-Flag_of_Italy.svg.png";
+      languageIcon.alt = "Italian Flag";
+    } else if (language === "en") {
+      languageIcon.src =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg/1200px-Flag_of_the_United_Kingdom_%283-5%29.svg.png";
+      languageIcon.alt = "English Flag";
+    }
+  } else {
+    console.error('Elemento "language-icon" non trovato.');
+  }
+}
+
+// Funzione per aggiornare il testo degli elementi sulla pagina
+function updatePageText(language) {
   document.querySelectorAll("[data-translate-key]").forEach((element) => {
     const key = element.getAttribute("data-translate-key");
 
-    // Verifica se la chiave esiste in translations[language]
-    if (Object.hasOwn(translations[language], key)) {
-      element.textContent = translations[language][key];
+    // Verifica se la lingua selezionata ha le traduzioni
+    if (translations[language] && typeof translations[language] === "object") {
+      // Verifica se la chiave esiste nelle traduzioni
+      if (Object.hasOwn(translations[language], key)) {
+        element.textContent = translations[language][key];
+      } else {
+        console.warn(
+          `Chiave di traduzione non trovata per "${key}" in "${language}".`
+        );
+        element.textContent = `Traduzione mancante per "${key}"`; // Messaggio di fallback
+      }
     } else {
-      console.warn(
-        `Chiave di traduzione non trovata per ${key} in ${language}`
-      );
-      element.textContent = key; // Usa la chiave come fallback
+      console.error(`Oggetto translations per "${language}" non valido.`);
+      element.textContent = `Errore di traduzione per la lingua "${language}"`; // Messaggio di errore
     }
   });
+}
 
-  // Cambia i placeholder dinamicamente
+// Funzione per aggiornare i placeholder dinamicamente
+function updatePlaceholders(language) {
   const searchBar = document.getElementById("searchBar");
   if (searchBar)
     searchBar.placeholder =
       translations[language]["Find Items"] || "Find Items";
+
   const buyItemInput = document.getElementById("buyItemName");
-  const objectName = document.getElementById("objectName");
-  if (objectName)
-    objectName.placeholder = translations[language]["Add"] || "Aggiungi";
   if (buyItemInput)
     buyItemInput.placeholder =
       translations[language]["Add Items"] || "Add Items";
+
+  const objectName = document.getElementById("objectName");
+  if (objectName)
+    objectName.placeholder = translations[language]["Add"] || "Aggiungi";
 
   const usernameInput = document.getElementById("username");
   if (usernameInput)
@@ -765,13 +827,6 @@ function changeLanguage(language) {
   const emailInput = document.getElementById("email");
   if (emailInput)
     emailInput.placeholder = translations[language]["Email"] || "Email";
-
-  // Ricarica altre informazioni
-  loadSuggestions();
-  updateDeleteButtons();
-
-  displayProfile();
-  updateTotals();
 }
 
 // Aggiungi un evento al pulsante di cambio lingua
@@ -779,12 +834,14 @@ document
   .getElementById("change-lang-button")
   .addEventListener("click", function () {
     // Cambia la lingua quando l'utente clicca
-    if (currentLanguage === "it") {
-      changeLanguage("en"); // Cambia a inglese
-    } else {
-      changeLanguage("it"); // Cambia a italiano
-    }
+    const newLanguage = currentLanguage === "it" ? "en" : "it"; // Cambia lingua tra "it" e "en"
+    changeLanguage(newLanguage);
   });
+
+// Avvia la lingua iniziale al caricamento del documento
+document.addEventListener("DOMContentLoaded", () => {
+  changeLanguage(currentLanguage); // Applica la lingua salvata
+});
 
 //COUNTER ITEMS
 // Funzione per aggiornare i totali dei prodotti nelle due liste
