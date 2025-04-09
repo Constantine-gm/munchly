@@ -21,6 +21,22 @@
   height: 25px;
 }
 
+
+.checkBtnStyle {
+  width:50px;
+  font-size: 14px; /* Riduce la dimensione del testo */
+  padding: 2px; /* Riduce lo spazio interno */
+  border: none; /* Rimuove il bordo */
+  background-color: transparent; /* Rimuove lo sfondo */
+  cursor: pointer; /* Aggiunge il cursore a forma di mano */
+}
+
+.checkBtnStyle:hover {
+  background-color: transparent; /* Cambia colore di sfondo al passaggio del mouse */
+  border-radius: 5px; /* Rende il bordo arrotondato */
+  box-shadow: none;
+}
+
 /* Sidebar Styles */
 #customBox {
   position: fixed;
