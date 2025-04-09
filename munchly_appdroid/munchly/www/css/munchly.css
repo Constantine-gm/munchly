@@ -590,6 +590,12 @@ td {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+td:first-child {
+  width:200px;
+}
+td:nth-child(2) {
+  width:10px;
+}
 
 th {
   background-color: #5bb1c2;

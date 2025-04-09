@@ -501,6 +501,16 @@ function loadBuyItems() {
     nameTd.appendChild(document.createTextNode(item.name)); // Aggiungi il nome dell'oggetto
     tr.appendChild(nameTd);
 
+     // Pulsante per "check" (segnare come acquistato)
+    const checkTd = document.createElement("td");
+    const checkBtn = document.createElement("button");
+    checkBtn.textContent = "✔️"; // Testo per il pulsante di check
+    checkBtn.classList.add("checkBtnStyle");
+    checkBtn.onclick = () => checkBuyItem(index); // Funzione per segnare come acquistato
+    checkTd.appendChild(checkBtn);
+    tr.appendChild(checkTd);
+
+
     // Pulsante per eliminare l'oggetto
     const deleteTd = document.createElement("td");
     const deleteBtn = document.createElement("button");
@@ -512,6 +522,15 @@ function loadBuyItems() {
 
     buyItemList.appendChild(tr);
   });
+}
+
+// Funzione per segnare un oggetto come acquistato (rimuoverlo dalla lista)
+function checkBuyItem(index) {
+  const savedBuyItems = JSON.parse(localStorage.getItem("buyItems")) || [];
+  savedBuyItems.splice(index, 1); // Rimuovi l'elemento all'indice (segna come acquistato)
+  localStorage.setItem("buyItems", JSON.stringify(savedBuyItems)); // Salva di nuovo nel localStorage
+  loadBuyItems(); // Ricarica la lista aggiornata
+  updateTotals(); // (Facoltativo)
 }
 
 // Funzione per rimuovere un oggetto dalla lista
