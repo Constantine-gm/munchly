@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>Storage Prodotti</title>
   <style>
        body {
@@ -14,6 +16,11 @@
     }
     h2 {
       color: #2c3e50;
+    }
+    .info {
+      margin:0 auto;
+      text-align: center;
+      font-family:Arial, sans-serif;
     }
         button {
       margin: 3px;
@@ -29,10 +36,9 @@
       max-width: 250px;
     }
     table { 
-
-        width: 40%; 
-        margin: 20px auto; 
-          border-collapse: collapse;
+width: 40%; 
+ margin: 20px auto; 
+ border-collapse: collapse;
   border-radius: 10px;
   overflow: hidden;
   font-weight: bold;
@@ -53,6 +59,14 @@
         padding: 8px; 
         text-align: center;
     }
+
+    tr.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+tr.clickable-row:hover {
+  background-color: #d3eafc;
+}
 
     form { 
         display:flex;
@@ -76,11 +90,128 @@
   font-size: 1rem;
   cursor: pointer;
 }
+#removeStorageForm {
+    margin:0 auto;
+  width:60%;
+  align-items: center;
+  justify-content: center;
+}
+#removeStorageForm input:not(#removeItemName) {
+  width:40px;
+}
+
+#removeItemName {
+  width:90px;
+}
+#removeAllBtn {
+  padding:14px;
+}
+
+
+@media (max-width: 480px) {
+  body {
+    margin: 10px;
+    font-size: 16px;
+  }
+  table {
+    width: 100% !important;
+    font-size: 0.9rem;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  th, td {
+    padding: 8px 5px;
+  }
+  /* Rendi i due input piccoli, larghezza ~10px */
+ 
+  #removeStorageForm input#removeItemQuantity {
+    width: 30px !important;
+    min-width: 40px !important;
+    padding: 3px 4px !important;
+    font-size: 1em !important;
+  }
+
+  /* per mantenere visibilità placeholder e testo */
+
+  #removeStorageForm input#removeItemQuantity::placeholder {
+    font-size: 15px !important;
+    width:20px;
+  }
+ #removeItemName {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none; /* opzionale, per evitare interazioni */
+  width: 0; /* opzionale */
+  height: 0; /* opzionale */
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+  /* Se vuoi mantenere il form orizzontale e ben distanziato */
+  #removeStorageForm {
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    justify-content: center !important;
+  }
+
+ button {
+    width: 60% ;
+    font-size: 0.9rem;
+    padding: 5px 8px;
+  }
+
+  button {
+    border-radius: 6px;
+  }
+  .back {
+    width: 70% !important;
+    font-size: 1.1rem;
+    padding: 14px;
+    border-radius: 6px;
+  }
+  .info {
+    font-size: 1rem;
+    padding: 0 10px;
+  }
+  /* Stile comune a tutti i bottoni del form removeStorageForm */
+#removeStorageForm button {
+  background-color: #4caf50; /* verde */
+  color: white;
+  border: none;
+  border-radius: 2px;
+  padding: 8px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 110px;
+  max-width: 250px;
+  text-shadow: 0px 0px 2.5px #333;
+  margin: 3px 5px 3px 0;
+  transition: background-color 0.3s ease;
+  border-radius: 6px;
+}
+
+#removeStorageForm button:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+/* Rimuovi o modifica questo stile che crea differenze visive */
+#removeAllBtn {
+  padding: 8px 10px; /* uguale agli altri */
+  width: 110px; /* uguale agli altri */
+  max-width: 250px;
+
+}
+
+}
 
   </style>
 </head>
 <body>
   <h2 style="text-align:center;">Storage Prodotti in Casa</h2>
+  <p data-translate-key="info" class="info">Click an Item to remove</p>
 
   <form id="addStorageForm">
     <input data-translate-key="Add Item" type="text" id="manualItemName" placeholder="Nome oggetto" required>
@@ -100,6 +231,16 @@
     </tbody>
   </table>
 
+  <form id="removeStorageForm">
+  <input type="text" id="removeItemName" placeholder="Nome oggetto da eliminare" required data-translate-key="Remove Item Name" />
+<input type="number" id="removeItemQuantity" placeholder="n°" min="1" data-translate-key="Remove Item Quantity" />
+<button type="submit" id="removePartialBtn" data-translate-key="Remove Partial">Elimina Quantità</button>
+<button type="button" id="removeAllBtn" data-translate-key="Remove All">Elimina Tutto</button>
+<button type="button" id="undoBtn" disabled data-translate-key="Undo Remove">Annulla Eliminazione</button>
+
+</form>
+
+
 <button class="back" id="goBackBtn">Torna alla Lista da Comprare</button>
 
 
@@ -108,25 +249,34 @@
     window.location.href = 'index.html';
   });
 
-    function loadStorageItems() {
-      const storageItems = JSON.parse(localStorage.getItem("storageItems")) || [];
-      const tableBody = document.getElementById("storageTableBody");
-      tableBody.innerHTML = "";
+ function loadStorageItems() {
+  const storageItems = JSON.parse(localStorage.getItem("storageItems")) || [];
+  const tableBody = document.getElementById("storageTableBody");
+  tableBody.innerHTML = "";
 
-      storageItems.forEach(item => {
-        const tr = document.createElement("tr");
+  storageItems.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.classList.add("clickable-row");  // riga cliccabile
 
-        const nameTd = document.createElement("td");
-        nameTd.textContent = item.name;
+    const nameTd = document.createElement("td");
+    nameTd.textContent = item.name;
 
-        const quantityTd = document.createElement("td");
-        quantityTd.textContent = item.quantity;
+    const quantityTd = document.createElement("td");
+    quantityTd.textContent = item.quantity;
 
-        tr.appendChild(nameTd);
-        tr.appendChild(quantityTd);
-        tableBody.appendChild(tr);
-      });
-    }
+    tr.appendChild(nameTd);
+    tr.appendChild(quantityTd);
+    tableBody.appendChild(tr);
+
+    // Listener: al click sulla riga, inserisce il nome nel campo rimozione
+    tr.addEventListener("click", () => {
+      document.getElementById("removeItemName").value = item.name;
+      // opzionale: mettere il focus sul campo quantità
+      document.getElementById("removeItemQuantity").focus();
+    });
+  });
+}
+
 
     function saveStorageItems(items) {
       localStorage.setItem("storageItems", JSON.stringify(items));
@@ -166,18 +316,30 @@
       "Add": "Aggiungi",
       "No items with expiration found!": "Nessun oggetto con scadenza trovato!",
       "Nome Prodotto": "Nome Prodotto",
+      "info": "Clicca un Prodotto per eliminare",
       "Quantity": "Quantità",
       "Torna alla Lista da Comprare": "Torna alla Lista da Comprare",
       "Storage Prodotti in Casa": "Storage Prodotti in Casa",
+      "Remove Item Name": "Prodotto",
+    "Remove Item Quantity": "n°",
+    "Remove Partial": "Elimina Quantità",
+    "Remove All": "Elimina Tutto",
+    "Undo Remove": "Annulla Eliminazione",
     },
     en: {
       "Add Item": "Item name",
       "Add": "Add",
+      "info":"Click an Item to Delete",
       "No items with expiration found!": "No items with expiration found!",
       "Nome Prodotto": "Product Name",
       "Quantity": "Quantity",
       "Torna alla Lista da Comprare": "Back to Shopping List",
       "Storage Prodotti in Casa": "Home Product Storage",
+          "Remove Item Name": "Item",
+    "Remove Item Quantity": "n°",
+    "Remove Partial": "Remove Quantity",
+    "Remove All": "Remove All",
+    "Undo Remove": "Undo Remove",
     },
   };
 
@@ -222,6 +384,107 @@ function applyTranslations() {
     applyTranslations();
     loadStorageItems(); // già presente
   });
+
+
+
+
+ document.getElementById("removeStorageForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById("removeItemName").value.trim();
+  const quantityToRemove = parseInt(document.getElementById("removeItemQuantity").value);
+
+  if (!name) return alert("Inserisci il nome del prodotto da eliminare.");
+
+  let items = JSON.parse(localStorage.getItem("storageItems")) || [];
+  const index = items.findIndex(item => item.name.toLowerCase() === name.toLowerCase());
+
+  if (index === -1) {
+    return alert("Prodotto non trovato nello storage.");
+  }
+
+  if (!quantityToRemove || quantityToRemove <= 0) {
+    return alert("Inserisci una quantità valida da eliminare.");
+  }
+
+  // Salviamo il prodotto/quantità per undo
+  lastRemovedItems = [{
+    name: items[index].name,
+    quantity: quantityToRemove > items[index].quantity ? items[index].quantity : quantityToRemove
+  }];
+
+  if (items[index].quantity <= quantityToRemove) {
+    items.splice(index, 1);
+  } else {
+    items[index].quantity -= quantityToRemove;
+  }
+
+  saveStorageItems(items);
+  loadStorageItems();
+
+  // reset input
+  document.getElementById("removeItemName").value = "";
+  document.getElementById("removeItemQuantity").value = "";
+
+  // abilita il pulsante undo
+  document.getElementById("undoBtn").disabled = false;
+});
+
+
+document.getElementById("removeAllBtn").addEventListener("click", function() {
+  const name = document.getElementById("removeItemName").value.trim();
+  if (!name) return alert("Inserisci il nome del prodotto da eliminare.");
+
+  let items = JSON.parse(localStorage.getItem("storageItems")) || [];
+  const index = items.findIndex(item => item.name.toLowerCase() === name.toLowerCase());
+
+  if (index === -1) {
+    return alert("Prodotto non trovato nello storage.");
+  }
+
+  // Salviamo il prodotto intero per undo
+  lastRemovedItems = [items[index]];
+
+  items.splice(index, 1);
+
+  saveStorageItems(items);
+  loadStorageItems();
+
+  // reset input
+  document.getElementById("removeItemName").value = "";
+  document.getElementById("removeItemQuantity").value = "";
+
+  // abilita il pulsante undo
+  document.getElementById("undoBtn").disabled = false;
+});
+
+document.getElementById("undoBtn").addEventListener("click", () => {
+  if (!lastRemovedItems || lastRemovedItems.length === 0) return;
+
+  let items = JSON.parse(localStorage.getItem("storageItems")) || [];
+
+  lastRemovedItems.forEach(removedItem => {
+    const index = items.findIndex(item => item.name.toLowerCase() === removedItem.name.toLowerCase());
+    if (index !== -1) {
+      // Se prodotto già esiste, aggiungi quantità
+      items[index].quantity += removedItem.quantity;
+    } else {
+      // Altrimenti lo aggiungi
+      items.push({ name: removedItem.name, quantity: removedItem.quantity });
+    }
+  });
+
+  saveStorageItems(items);
+  loadStorageItems();
+
+  // Disabilita undo finché non si elimina di nuovo
+  lastRemovedItems = null;
+  document.getElementById("undoBtn").disabled = true;
+});
+
+let lastRemovedItems = null;
+
+
     
 
 
