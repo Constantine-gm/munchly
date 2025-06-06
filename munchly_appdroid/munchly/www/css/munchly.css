@@ -58,15 +58,19 @@
   display: flex;
   flex-direction: column;
   margin-top: 3px;
+  width:100%;
   margin-bottom: 3px;
-}
 
-#customBox .color-picker-container {
-  margin-top: 25px;
-  width: 180px;
+}
+.pdm {
+  display:flex;
+  flex-direction: row;
+  gap:10px;
+
 }
 
 .p1 {
+  width:50%;
   text-align: left;
   color: #99f3ff;
   margin-top: 15px;
@@ -74,13 +78,6 @@
   margin-bottom: 0;
 }
 
-.p2 {
-  text-align: left;
-  color: #99f3ff;
-  margin-top: 0;
-  text-transform: uppercase;
-  margin-bottom: 2px;
-}
 
 /* Sidebar Button */
 #show {
@@ -124,16 +121,43 @@
   display: none;
 }
 #totalsBox {
-  background-color: #f3f3f31d;
-  border-radius: 5px;
-  font-size: 14px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
-  padding: 0.4em;
+  width: 40%;
+  gap:9px;
 }
 
-#totalsBox p {
-  margin: 0 10px;
+.tb1 {
+  display:flex ;
+  flex-direction: column;
+  width:30%;
+
+
 }
+.tb1 p {
+  margin: 0;
+}
+
+.tb2 {
+  width:40%;
+  font-size: 1.4em;
+}
+
+.tb2 a {
+  color: white;
+  text-decoration: none;
+
+}
+.tb2  a:hover {
+    cursor: pointer;
+    color:#4caf50;
+  }
+
+
+
+
 #loginBtn {
   padding: 10px 20px;
   background-color: #4caf50;
@@ -145,16 +169,16 @@
 
 #profile {
   cursor: pointer;
-  font-size: 1.2em;
+  font-size: 1.3em;
   color: white;
   background-color: #4caf50;
-  padding: 0.6em;
+  padding: 8px 4px;
   border: none;
-  width: auto;
+  width:30%;
   border-radius: 5px;
   align-items: center;
+ 
 }
-#profile p,
 #profile span {
   margin: 0;
   padding: 0;
@@ -345,45 +369,7 @@ body.dark-mode input[type="number"]:focus {
   background-size: 85%;
 }
 
-/*Color Picker*/
 
-#color-picker-container {
-  text-align: left;
-  position: absolute;
-  width: 150px;
-  background-color: rgb(118, 126, 129);
-  margin: 0px 5px;
-  border-radius: 5px;
-  padding: 4px;
-  border: 1px solid teal;
-}
-
-.titolocp {
-  color: #b0f3ff;
-  font-weight: bold;
-}
-#reset-btn {
-  width: 90px;
-  font-size: 0.7rem;
-  padding: 5px;
-}
-
-.color-picker-container label {
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: #b0f3ff;
-}
-
-.color-picker-container input {
-  width: 20px;
-  height: 20px;
-  border-radius: 3px;
-  padding: 0px;
-}
-.color-picker-container input:hover {
-  width: 21px;
-  height: 21px;
-}
 body {
   font-family: "Sulphur Point", sans-serif;
   margin: 0;
@@ -590,7 +576,7 @@ button:hover:not(#show, #change-lang-button) {
 table {
   margin: 10px auto;
   width: 90%;
-  max-width: 100dvw;
+  max-width: 90dvw;
   border-collapse: collapse;
   border-radius: 10px;
   overflow: hidden;
@@ -599,15 +585,16 @@ table {
 
 th,
 td {
-  padding: 8px;
+  padding: 5px;
   text-align: left;
   border: none;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 td:first-child {
-  width:200px;
+  width:100px;
 }
 td:nth-child(2) {
   width:10px;
@@ -618,16 +605,25 @@ th {
   color: white;
   padding-top: 8px;
   padding-bottom: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-family: "Quicksand", serif;
   font-weight: bolder;
+
 }
+#buyItemTable td:nth-child(2) {
+    width:5%;
+}
+#buyItemTable th:nth-child(2) {
+   width:5%;
+}
+
 
 td {
   border: none;
   border-bottom: 1px solid lightblue;
   font-family: "Quicksand", serif;
   font-weight: bolder;
+ 
 }
 .box {
   justify-content: center;
@@ -648,13 +644,16 @@ tr {
 /* Specific Width for the column "Delete" */
 #buyItemTable td:last-child,
 #buyItemTable th:last-child {
-  width: 85px;
+  width: 10%;
+}
+#buyItemTable th:nth-child(2) {
+  max-width: 8%;
 }
 #objectTable td:last-child,
 #objectTable th:last-child {
-  width: 85px;
+  width: 10%;
+    
 }
-
 .priority-text {
   margin-left: 10px;
   font-size: 18px;
@@ -694,30 +693,24 @@ tr {
 
 /* Media Query for mobiles - 480px */
 @media (max-width: 480px) {
-  #show {
-    font-size: 19px;
-    background: transparent;
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    right: 0;
-    top: -5px;
-    box-shadow: rgba(255, 255, 255, 0.8);
+ .tb1 {
+  border:none;
+  gap:2px;
+}
+  .tb2 {
+width:60%;
   }
 
   #show:hover {
     font-size: 27px;
   }
 
-  .color-picker-container {
-    display: none;
-  }
   /* Sidebar Styles */
   #customBox {
     position: fixed;
     top: 0;
-    right: -300px; /* Initially hide on the right */
-    width: 150px;
+    right: -350px; /* Initially hide on the right */
+    width: 280px;
     height: 100%;
     background-color: #333;
     color: white;
@@ -733,10 +726,6 @@ tr {
   #customBox .custom-box {
     margin-bottom: 2px;
     margin-top: 1px;
-  }
-
-  #customBox .color-picker-container {
-    width: 180px;
   }
 
   /* Sidebar Button */
@@ -787,10 +776,6 @@ tr {
     box-shadow: 0px 2px 4px rgba(132, 132, 132, 0.7);
   }
 
-  table {
-    width: 100%;
-    max-width: none;
-  }
 
   th,
   td {
@@ -807,14 +792,23 @@ tr {
     margin-bottom: 20px;
   }
 
-  .box {
-    flex-direction: column;
-    width: 100%;
-  }
-  .b1 {
-    margin: 0 auto;
-    width: 90%;
-  }
+  #boxElements {
+  margin: 0px auto;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  gap:15px;
+}
+
+#boxElements div {
+  margin:0px auto;
+}
+.b1 {
+  width:98%;
+}
+.title3 {
+  margin-bottom:6px;
+}
 
   .boxbuy {
     display: flex;
@@ -823,8 +817,13 @@ tr {
     gap: 8px;
     padding: 5px;
   }
-  .boxbuy #buyItemName {
-    width: 40%;
+ .boxbuy #buyItemName {
+    width: 35%;
+  }
+  .boxbuy label {
+    font-size: 1em;
+    font-weight: bold;
+    text-transform: uppercase;
   }
 
   .boxbuy input,
@@ -835,10 +834,23 @@ tr {
   }
 
   #login {
-    display: block;
+    display: flex;
+    gap:20px;
     justify-content: left;
+    width:100%;
+   
+  }
+  #profile {
+    width:40%;
+
   }
   #logotitle {
     size: 1em;
   }
+}
+.storageBtnStyle {
+  background-color: transparent; /* Nessun colore di sfondo */
+  border: none;                  /* Nessun bordo */
+  cursor: pointer;               /* Mostra la manina al passaggio */
+  font-size: 16px;               /* Opzionale: dimensione più leggibile */
 }

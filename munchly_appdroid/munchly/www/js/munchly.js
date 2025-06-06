@@ -101,7 +101,9 @@ function displayProfile() {
       // Mostra il profilo e nasconde il bottone di login
       profile.style.display = "block";
       loginBtn.style.display = "none";
-      totalsBox.style.display = "block";
+      totalsBox.style.display = "flex";
+totalsBox.style.flexDirection = "row"; // opzionale se serve
+
     } else {
       // Se non ci sono dati utente, nascondi il profilo e mostra il bottone di login
       profile.style.display = "none";
@@ -501,20 +503,22 @@ function loadBuyItems() {
     nameTd.appendChild(document.createTextNode(item.name)); // Aggiungi il nome dell'oggetto
     tr.appendChild(nameTd);
 
-     // Pulsante per "check" (segnare come acquistato)
-    const checkTd = document.createElement("td");
-    const checkBtn = document.createElement("button");
-    checkBtn.textContent = "✔️"; // Testo per il pulsante di check
-    checkBtn.classList.add("checkBtnStyle");
-    checkBtn.onclick = () => checkBuyItem(index); // Funzione per segnare come acquistato
-    checkTd.appendChild(checkBtn);
-    tr.appendChild(checkTd);
+
+    // Pulsante Storage (aggiunto)
+    const storageTd = document.createElement("td");
+    const storageBtn = document.createElement("button");
+    storageBtn.textContent = "✔️";
+    storageBtn.classList.add("storageBtnStyle");
+    storageBtn.onclick = () => moveToStorage(index);
+    storageTd.appendChild(storageBtn);
+    tr.appendChild(storageTd);
 
 
     // Pulsante per eliminare l'oggetto
     const deleteTd = document.createElement("td");
     const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
+  // Inserisci l'icona dentro il bottone
+deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
     deleteBtn.classList.add("deleteBtnStyle");
     deleteBtn.onclick = () => deleteBuyItem(index);
     deleteTd.appendChild(deleteBtn);
@@ -524,14 +528,6 @@ function loadBuyItems() {
   });
 }
 
-// Funzione per segnare un oggetto come acquistato (rimuoverlo dalla lista)
-function checkBuyItem(index) {
-  const savedBuyItems = JSON.parse(localStorage.getItem("buyItems")) || [];
-  savedBuyItems.splice(index, 1); // Rimuovi l'elemento all'indice (segna come acquistato)
-  localStorage.setItem("buyItems", JSON.stringify(savedBuyItems)); // Salva di nuovo nel localStorage
-  loadBuyItems(); // Ricarica la lista aggiornata
-  updateTotals(); // (Facoltativo)
-}
 
 // Funzione per rimuovere un oggetto dalla lista
 function deleteBuyItem(index) {
@@ -540,6 +536,41 @@ function deleteBuyItem(index) {
   localStorage.setItem("buyItems", JSON.stringify(savedBuyItems)); // Salva di nuovo nel localStorage
   loadBuyItems(); // Ricarica la lista aggiornata
   updateTotals(); // (Assumendo che questa funzione esista, è facoltativa)
+}
+
+// Funzione per spostare elemento in Storage e rimuoverlo da To Buy
+function moveToStorage(index) {
+  const savedBuyItems = JSON.parse(localStorage.getItem("buyItems")) || [];
+  const storageList = JSON.parse(localStorage.getItem("storageItems")) || [];
+
+  const item = savedBuyItems[index];
+
+  // Chiedi quantità tramite prompt
+  let quantity = prompt(`Inserisci la quantità acquistata per "${item.name}":`, "1");
+  if (quantity === null) return; // Se annulla
+  quantity = parseInt(quantity);
+  if (isNaN(quantity) || quantity <= 0) {
+    alert("Quantità non valida");
+    return;
+  }
+
+  // Controlla se esiste già in storage e somma la quantità
+  const existing = storageList.find(i => i.name.toLowerCase() === item.name.toLowerCase());
+  if (existing) {
+    existing.quantity += quantity;
+  } else {
+    storageList.push({ name: item.name, quantity: quantity });
+  }
+
+  // Salva storage aggiornato
+  localStorage.setItem("storageItems", JSON.stringify(storageList));
+
+  // Rimuovi da lista To Buy
+  savedBuyItems.splice(index, 1);
+  localStorage.setItem("buyItems", JSON.stringify(savedBuyItems));
+
+  loadBuyItems();
+  updateTotals?.();
 }
 
 // Rimuove l'errore di input quando l'utente interagisce con l'input
@@ -679,6 +710,7 @@ const translations = {
     Product: "Prodotto",
     Expiry: "Scadenza",
     Delete: "Elimina",
+    Storage: 'Inventario',
     "Expiry List": "Lista Scadenze",
     "Shopping List": "Lista della Spesa",
     Suggestions: "Suggerimenti",
@@ -718,6 +750,7 @@ const translations = {
     Product: "Product",
     Expiry: "Expiry",
     Delete: "Delete",
+    Storage: 'Storage',
     "Expiry List": "Expiry List",
     "Shopping List": "Shopping List",
     Suggestions: "Suggestions",
@@ -890,6 +923,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function updateTotals() {
   const savedObjects = JSON.parse(localStorage.getItem("objects")) || [];
   const savedBuyItems = JSON.parse(localStorage.getItem("buyItems")) || [];
+   const storageItems = JSON.parse(localStorage.getItem("storageItems")) || [];
 
   // Conta tutti i prodotti in scadenza (anche quelli non visibili)
   const expiryCount = savedObjects.reduce((count, obj) => {
@@ -901,10 +935,13 @@ function updateTotals() {
   }, 0);
 
   const buyCount = savedBuyItems.length;
+ // Conta la quantità totale nello storage
+  const storageCount = storageItems.reduce((total, item) => total + item.quantity, 0);
 
   // Aggiorna il contatore nella pagina
   document.getElementById("expiryCount").textContent = expiryCount;
   document.getElementById("buyCount").textContent = buyCount;
+    document.getElementById("storageCount").textContent = storageCount;
 }
 
 // Function for searching the items
@@ -930,7 +967,8 @@ function searchObjects() {
 
         const deleteTd = document.createElement("td");
         const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
+       // Inserisci l'icona dentro il bottone
+deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
         deleteBtn.classList.add("deleteBtnStyle");
         deleteBtn.onclick = () => deleteObject(obj.id);
         deleteTd.appendChild(deleteBtn);
@@ -973,51 +1011,7 @@ loadBuyItems();
 displayProfile();
 updateTotals();
 
-//Color Picker
-// Function to apply selected colors
-function applyColors() {
-  const backgroundColor = document.getElementById("background-color").value;
-  const textColor = document.getElementById("text-color").value;
 
-  // Change color of background, header and th
-  document.querySelector("header").style.backgroundColor = backgroundColor;
-  const thElements = document.querySelectorAll("th");
-  thElements.forEach((th) => {
-    th.style.backgroundColor = backgroundColor;
-  });
-
-  // Change color of text di th e titles
-  thElements.forEach((th) => {
-    th.style.color = textColor;
-  });
-  document.querySelector(".title").style.color = textColor;
-}
-
-// Function to reset color to default
-function resetColors() {
-  document.getElementById("background-color").value = "#5bb1c2";
-  document.getElementById("text-color").value = "#ffffff";
-
-  // Set color to default (header and th)
-  document.querySelector("header").style.backgroundColor = "#5bb1c2";
-  const thElements = document.querySelectorAll("th");
-  thElements.forEach((th) => {
-    th.style.backgroundColor = "#5bb1c2";
-    th.style.color = "#ffffff";
-  });
-
-  // Set titles color to default
-  document.querySelector(".title").style.color = "#ffffff";
-}
-
-// Add an event listeners to the color picker to apply changes
-document
-  .getElementById("background-color")
-  .addEventListener("input", applyColors);
-document.getElementById("text-color").addEventListener("input", applyColors);
-
-// Add an event listener to reset button
-document.getElementById("reset-btn").addEventListener("click", resetColors);
 
 document
   .getElementById("darkmode-toggle")
@@ -1028,3 +1022,6 @@ document
       document.body.classList.remove("dark-mode");
     }
   });
+
+  
+  
