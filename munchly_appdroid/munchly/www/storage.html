@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Storage Prodotti</title>
+  <style>
+       body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+    }
+    h2 {
+      color: #2c3e50;
+    }
+        button {
+      margin: 3px;
+      padding: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      background-color: #4caf50;
+      color: white;
+      text-shadow: 0px 0px 2.5px #333;
+      border: none;
+      border-radius: 2px;
+      width: 110px;
+      max-width: 250px;
+    }
+    table { 
+
+        width: 40%; 
+        margin: 20px auto; 
+          border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  font-weight: bold;
+    
+    }
+    th {
+    background-color: #5bb1c2;
+  color: white;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  font-weight: bolder;
+
+    }
+    
+    td { 
+        border: 1px solid #ccc; 
+        padding: 8px; 
+        text-align: center;
+    }
+
+    form { 
+        display:flex;
+        gap:5px;
+        width: 300px; 
+        margin: 20px auto;
+     }
+    input { 
+        width: 100%; 
+        margin: 5px 0; 
+        padding: 6px; 
+    }
+    button { 
+         padding: 6px 10px; 
+        }
+ .back {
+  display: block;
+  width:100%;
+  margin: 20px auto;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">Storage Prodotti in Casa</h2>
+
+  <form id="addStorageForm">
+    <input data-translate-key="Add Item" type="text" id="manualItemName" placeholder="Nome oggetto" required>
+    <input type="number" id="manualItemQuantity"  data-translate-key="Quantity" placeholder="Quantità" min="1" required>
+    <button type="submit" data-translate-key="Add">Aggiungi</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nome Prodotto</th>
+        <th>Quantità</th>
+      </tr>
+    </thead>
+    <tbody id="storageTableBody">
+      <!-- Gli elementi vengono inseriti qui -->
+    </tbody>
+  </table>
+
+<button class="back" id="goBackBtn">Torna alla Lista da Comprare</button>
+
+
+  <script>
+      document.getElementById('goBackBtn').addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+
+    function loadStorageItems() {
+      const storageItems = JSON.parse(localStorage.getItem("storageItems")) || [];
+      const tableBody = document.getElementById("storageTableBody");
+      tableBody.innerHTML = "";
+
+      storageItems.forEach(item => {
+        const tr = document.createElement("tr");
+
+        const nameTd = document.createElement("td");
+        nameTd.textContent = item.name;
+
+        const quantityTd = document.createElement("td");
+        quantityTd.textContent = item.quantity;
+
+        tr.appendChild(nameTd);
+        tr.appendChild(quantityTd);
+        tableBody.appendChild(tr);
+      });
+    }
+
+    function saveStorageItems(items) {
+      localStorage.setItem("storageItems", JSON.stringify(items));
+    }
+
+    document.getElementById("addStorageForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("manualItemName").value.trim();
+      const quantity = parseInt(document.getElementById("manualItemQuantity").value);
+
+      if (!name || quantity <= 0) return;
+
+      const items = JSON.parse(localStorage.getItem("storageItems")) || [];
+
+      const existing = items.find(item => item.name.toLowerCase() === name.toLowerCase());
+      if (existing) {
+        existing.quantity += quantity;
+      } else {
+        items.push({ name, quantity });
+      }
+
+      saveStorageItems(items);
+      loadStorageItems();
+
+      // reset input
+      document.getElementById("manualItemName").value = "";
+      document.getElementById("manualItemQuantity").value = "";
+    });
+
+    window.addEventListener("DOMContentLoaded", loadStorageItems);
+
+
+  // 1. Dizionario delle traduzioni
+  const translations = {
+    it: {
+      "Add Item": "Nome oggetto",
+      "Add": "Aggiungi",
+      "No items with expiration found!": "Nessun oggetto con scadenza trovato!",
+      "Nome Prodotto": "Nome Prodotto",
+      "Quantity": "Quantità",
+      "Torna alla Lista da Comprare": "Torna alla Lista da Comprare",
+      "Storage Prodotti in Casa": "Storage Prodotti in Casa",
+    },
+    en: {
+      "Add Item": "Item name",
+      "Add": "Add",
+      "No items with expiration found!": "No items with expiration found!",
+      "Nome Prodotto": "Product Name",
+      "Quantity": "Quantity",
+      "Torna alla Lista da Comprare": "Back to Shopping List",
+      "Storage Prodotti in Casa": "Home Product Storage",
+    },
+  };
+
+  // 2. Lingua corrente (puoi cambiarla dinamicamente)
+  let currentLanguage = "en"; // Cambia in "en" per inglese
+
+  // 3. Funzione di traduzione
+function applyTranslations() {
+  document.querySelectorAll("[data-translate-key]").forEach((element) => {
+    const key = element.getAttribute("data-translate-key");
+    const translation = translations[currentLanguage][key];
+    if (translation) {
+      // Se è un input con placeholder
+      if (element.tagName === "INPUT" && element.hasAttribute("placeholder")) {
+        element.setAttribute("placeholder", translation);
+      } else {
+        element.textContent = translation;
+      }
+    }
+  });
+
+    // Traduci anche il titolo e altri elementi non marcati esplicitamente
+    document.title = translations[currentLanguage]["Storage Prodotti in Casa"];
+    const title = document.querySelector("h2");
+    if (title) title.textContent = translations[currentLanguage]["Storage Prodotti in Casa"];
+
+    const backLink = document.querySelector("a");
+    if (backLink && backLink.textContent.includes("Torna")) {
+      backLink.textContent = translations[currentLanguage]["Torna alla Lista da Comprare"];
+    }
+
+    // Traduci intestazioni tabella
+    const ths = document.querySelectorAll("th");
+    if (ths.length >= 2) {
+      ths[0].textContent = translations[currentLanguage]["Nome Prodotto"];
+      ths[1].textContent = translations[currentLanguage]["Quantità"];
+    }
+  }
+
+  // 4. Esegui la traduzione al caricamento della pagina
+  document.addEventListener("DOMContentLoaded", () => {
+    applyTranslations();
+    loadStorageItems(); // già presente
+  });
+    
+
+
+  </script>
+</body>
+</html>
