@@ -754,10 +754,11 @@ width:60%;
     right: 3px;
   }
   header {
-    height: 130px;
+        height: 140px;
   }
   .title {
     font-size: 2rem;
+    padding:4px;
   }
 
   #objectName,

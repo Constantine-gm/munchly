@@ -74,6 +74,7 @@
   margin-top: 15px;
   text-transform: uppercase;
   margin-bottom: 0;
+
 }
 
 
@@ -413,7 +414,7 @@ img:not(#language-icon):hover {
 
 header {
   background-color: #5bb1c2;
-  height: 170px;
+  height: 175px;
   display: flex;
   justify-content: center;
 }
@@ -423,6 +424,7 @@ header {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+    padding:10px;
 }
 /* Main Contents */
 .title {
@@ -758,10 +760,11 @@ width:60%;
     right: 3px;
   }
   header {
-    height: 130px;
+    height: 140px;
   }
   .title {
     font-size: 2rem;
+     padding:3px;
   }
 
   #objectName,

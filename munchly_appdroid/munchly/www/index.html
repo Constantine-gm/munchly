@@ -33,9 +33,18 @@
             <div id="profile">
               <p id="greeting"><span id="profileName"></span></p>
             </div>
-            <div id="totalsBox">
-                <p><i class="fas fa-apple-alt"></i>:    <span id="expiryCount">0</span></p>
-                <p><i class="fas fa-shopping-cart"></i>:   <span id="buyCount">0</span></p>
+
+
+
+                 <div id="totalsBox">
+            <div class="tb1">
+                <p><i class="fas fa-apple-alt"></i>:   <span id="expiryCount">0</span></p>
+<p><i class="fas fa-shopping-cart"></i>:   <span id="buyCount">0</span></p>
+            </div>
+               <div class="tb2">
+              <a href="storage.html"><i class="fa-solid fa-box-archive"></i>:</a> <span id="storageCount">0</span>
+               </div>
+               
             </div>
         </div>
           </div>
@@ -60,28 +69,17 @@
           </div>
         
         <!-- Dark Mode -->
-        <p class="p1" data-translate-key="Dark Mode">Dark Mode</p>
+         <div class="pdm">
+<p class="p1" data-translate-key="Dark Mode">Dark Mode</p>
          <div class="custom-box" id="box1">
          <div id="darkmod">
         <input class="dm" type="checkbox" id="darkmode-toggle"/>
         <label for ="darkmode-toggle" id="dmlabel"></label>
     </div>
     </div>
-        <div class="custom-box">
-        <!-- Color Picker -->
-        <p class="p2" data-translate-key="Color Picker">Color Picker</p>
-    <div class="color-picker-container" id="color-picker-container" style="width:180px">
-        <div class="titolocp" data-translate-key="Change Color">Change Color</div>
-              <label for="background-color" data-translate-key="Background">Background:</label>
-            <input type="color" id="background-color" name="background-color" value="#5bb1c2">
+         </div>
         
-                <label for="text-color" data-translate-key="Text:">Text:</label>
-            <input type="color" id="text-color" name="text-color" value="#ffffff">
-        
-          <!-- Reset Button -->
-          <button id="reset-btn" class="reset-btn" data-translate-key="Reset Colors">Reset Colors</button>
-    </div>
-    </div>
+     
     </div>
     <!-- Page Title -->
     <div class="htit">
@@ -94,7 +92,7 @@
 </header>
 <body>
 <div class="exp">
-    <input type="text" id="objectName" placeholder="Item Name" />
+    <input type="text" id="objectName" placeholder="Add Item" data-translate-key="Add Item"/>
     <label for="expirydate" style="display:none;"></label><input type="date" id="expiryDate"/>
     <label for="quantity" style="display:none;"></label><input type="number" id="quantity" value="1" min="1">
     <button onclick="addObject()" data-translate-key="Add">Add</button>
@@ -103,7 +101,7 @@
     <div class="line"></div>
 
 
-<div class="box">
+<div class="box" id="boxElements">
     <div class="b1">
     <div class="title2" data-translate-key="Expiry List">Expiry List</div>
     <div class="btns">
@@ -123,24 +121,26 @@
         <tbody id="objectList"></tbody>
     </table>
 </div>
+
 <div class="b1">
     
-  <h2 class="title3" data-translate-key="Shopping List">Shopping List</h2>
-    <div class="boxbuy">
-    <input class="buy" type="text" id="buyItemName" placeholder="Add Items" data-translate-key="Add Items"/>
-     <label for="itemPriority" data-translate-key="priority">Priority:</label>
+ <h2 class="title3" data-translate-key="Shopping List">Shopping List</h2>
+<div class="boxbuy">
+    <input class="buy" type="text" id="buyItemName" placeholder="Insert Items" data-translate-key="Add Items"/>
+    <label for="itemPriority" data-translate-key="priority">Priority:</label>
 <select id="itemPriority">
     <option value="high">🔴</option>
-    <option value="medium">🟡</option>
+    <option value="medium" >🟡</option>
+    <option value="none"></option>
 </select>
     <button onclick="addBuyItem()" data-translate-key="Add">Add</button>
     </div>
-  
+
     <table id="buyItemTable">
         <thead>
             <tr>
                 <th data-translate-key="Product">Product</th>
-                <th></th>
+                <th data-translate-key="Storage">Storage</th>
                 <th data-translate-key="Delete">Delete</th>
             </tr>
         </thead>
@@ -152,19 +152,32 @@
         </ul>
     </div>
 </div>
-
+</div>
 <!-- Modal for Priority Selection -->
 <div id="priorityModal" class="modal">
   <div class="modal-content">
     <h2 data-translate-key="select priority">Select Priority</h2>
-    <label>
-      <input type="checkbox" id="highPriority" data-translate-key="high"> Alta (🔴)
+   <label>
+      <input type="checkbox" id="highPriority">
+      <span data-translate-key="high">Alta (🔴)</span>
     </label><br>
+
     <label>
-      <input type="checkbox" id="mediumPriority" data-translate-key="medium"> Media (🟡)
+      <input type="checkbox" id="mediumPriority">
+      <span data-translate-key="medium">Media (🟡)</span>
     </label><br>
     <button onclick="confirmPriority()" data-translate-key="confirm">Confirm</button>
     <button onclick="closePriorityModal()" data-translate-key="cancel">Cancel</button>
+  </div>
+</div>
+
+<div id="quantityModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:1000;">
+  <div style="background:#fff; padding:20px; border-radius:8px; max-width:300px; width:90%; text-align:center;">
+    <p id="modalText"></p>
+    <input type="number" id="quantityInput" min="1" value="1" style="width:60px; margin-bottom:15px;" />
+    <br />
+    <button id="confirmBtn">Conferma</button>
+    <button id="cancelBtn">Annulla</button>
   </div>
 </div>
 <script src="js/munchly.js"></script>

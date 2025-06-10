@@ -157,14 +157,26 @@
 <div id="priorityModal" class="modal">
   <div class="modal-content">
     <h2 data-translate-key="select priority">Select Priority</h2>
-    <label>
-      <input type="checkbox" id="highPriority" data-translate-key="high"> Alta (🔴)
+   <label>
+      <input type="checkbox" id="highPriority">
+      <span data-translate-key="high">Alta (🔴)</span>
     </label><br>
+
     <label>
-      <input type="checkbox" id="mediumPriority" data-translate-key="medium"> Media (🟡)
+      <input type="checkbox" id="mediumPriority">
+      <span data-translate-key="medium">Media (🟡)</span>
     </label><br>
     <button onclick="confirmPriority()" data-translate-key="confirm">Confirm</button>
     <button onclick="closePriorityModal()" data-translate-key="cancel">Cancel</button>
+  </div>
+</div>
+<div id="quantityModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:1000;">
+  <div style="background:#fff; padding:20px; border-radius:8px; max-width:300px; width:90%; text-align:center;">
+    <p id="modalText"></p>
+    <input type="number" id="quantityInput" min="1" value="1" style="width:60px; margin-bottom:15px;" />
+    <br />
+    <button id="confirmBtn">Conferma</button>
+    <button id="cancelBtn">Annulla</button>
   </div>
 </div>
 
