@@ -7,9 +7,9 @@
     </author>
   <icon src="www/img/icon.png"/>
   <platform name="android">
-    <preference name="android-targetSdkVersion" value="34"/>
+    <preference name="android-targetSdkVersion" value="35"/>
     <preference name="android-minSdkVersion" value="21"/>
-    <preference name="android-compileSdkVersion" value="34"/>
+    <preference name="android-compileSdkVersion" value="35"/>
     <preference name="AndroidPersistentFileLocation" value="Compatibility"/>
     <permission name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <permission name="android.permission.READ_EXTERNAL_STORAGE"/>

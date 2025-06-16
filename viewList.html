@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script src="https://kit.fontawesome.com/6bfa7fc6c3.js" crossorigin="anonymous"></script>
+
     <title id="pageTitle">View Lists</title>
   </head>
   <style>
@@ -12,10 +14,35 @@
     }
     h1 {
       color: #2c3e50;
-      text-align: center;
+      text-align: left;
     }
     h2 {
       color: #2c3e50;
+    }
+    .flex-wrapper {
+  display: flex;
+  gap: 10px; 
+  align-items: flex-start; 
+  justify-content: center; 
+  flex-wrap: nowrap; 
+}
+
+.container1, .container2 {
+flex: 1;
+width:600px;
+
+}
+
+
+    #objectsList{
+      width:30%;
+    }
+    #buyItemsList  {
+      width:30%;
+       background-color: #f4f4f4;
+      border-radius: 8px;
+      padding:15px;
+
     }
     pre {
       background-color: #f4f4f4;
@@ -45,9 +72,99 @@
     .priority-section {
       display: none;
     }
+    #removeStorageForm {
+  width:100%;
+  align-items: center;
+  justify-content: center;
+
+}
+#removeStorageForm input:not(#removeItemName) {
+  width:40px;
+}
+
+#removeItemName {
+  width: 100px;
+
+}
+#removePartialBtn {
+  padding:6px;
+}
+#removeAllBtn {
+  padding:6px;
+  background-color: #e12222;
+}
+#undoBtn {
+  background-color: #e12222;
+  width:50px;
+  padding:6px;
+  color:white;
+  font-family: 2em;
+
+}
+ table { 
+width: 78%; 
+margin-top:10px;
+ border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  font-weight: bold;
+    
+    }
+ th {
+  background-color: #f4f4f4;
+  font-size: 1rem;
+    color: #2c3e50;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  font-weight: bolder;
+
+    }
+    
+  td { 
+        border: 1px solid #ccc; 
+        padding: 8px; 
+        text-align: center;
+    }
+
+  tr.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+  tr.clickable-row:hover {
+  background-color: #d3eafc;
+}
+@media (max-width: 768px) {
+  .flex-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .container1,
+  .container2 {
+    width: 100%;
+  }
+
+  #objectsList,
+  #buyItemsList {
+    width: 100%;
+  }
+  #addStorageForm input {
+    width:25%;
+  }
+  #removeStorageForm input {
+    width:20%;
+  }
+  .backk {
+    margin-top:50px;
+  }
+}
+
   </style>
   <body>
-    <h1 data-translate-key="View Lists">View Lists</h1>
+    <div class="flex-wrapper">
+ <div class="container1">
+<h1 data-translate-key="View Lists">View Lists</h1>
     <h2 data-translate-key="Inventory">Inventory:</h2>
     <pre id="objectsList"></pre>
 
@@ -66,7 +183,49 @@
       <pre id="nonePriorityItems" class="priority-section"></pre>
     </div>
 
-    <button data-translate-key="Back" onclick="window.history.back()">
+    </div>
+    <div class="container2">
+<h1 style="font-size: 1.7em;">Storage Prodotti in Casa</h2>
+  <p data-translate-key="info" class="info">Click an Item to remove</p>
+
+  <form id="addStorageForm">
+    <input data-translate-key="Add Item" type="text" id="manualItemName" placeholder="Nome oggetto" required>
+    <input type="number" id="manualItemQuantity"  data-translate-key="Quantity" placeholder="Quantità" min="1" required>
+    <button type="submit" data-translate-key="Add">Aggiungi</button>
+  </form>
+
+  <table class="storagetable">
+    <thead>
+      <tr>
+        <th>Nome Prodotto</th>
+        <th>Quantità</th>
+      </tr>
+    </thead>
+    <tbody id="storageTableBody">
+      <!-- Gli elementi vengono inseriti qui -->
+    </tbody>
+  </table>
+
+  <form id="removeStorageForm">
+  <input type="text" id="removeItemName" placeholder="Select Item" required data-translate-key="Select Item" />
+<input type="number" id="removeItemQuantity" placeholder="n°" min="1" data-translate-key="Remove Item Quantity" />
+<button type="submit" id="removePartialBtn" data-translate-key="Remove Partial">Elimina</button>
+<button type="button" id="removeAllBtn" data-translate-key="Remove All">Elimina Tutto</button>
+<button type="button" id="undoBtn" disabled ><i class="fa-solid fa-arrow-rotate-left"></i></button>
+
+</form>
+
+
+
+
+    </div>
+
+
+    </div>
+   
+    
+
+    <button class="backk" data-translate-key="Back" onclick="window.history.back()">
       Back
     </button>
 
@@ -87,6 +246,15 @@
           "No items to buy!": "Nessun articolo da comprare!",
           "No items with expiration found!":
             "Nessun articolo con scadenza trovato!",
+             "Add Item": "Nome oggetto",
+      "Add": "Aggiungi",
+      "info": "Clicca un Prodotto per eliminare",
+      "Quantity": "Quantità",
+      "Select Item": "Seleziona Prodotto",
+      "Remove Item Quantity": "n°",
+      "Remove Partial": "Elimina",
+      "Remove All": "Elimina Tutto",
+      "Undo Remove": "Annulla Eliminazione",
         },
         en: {
           "View Lists": "View Lists",
@@ -98,6 +266,15 @@
           Back: "Back",
           "No items to buy!": "No items to buy!",
           "No items with expiration found!": "No items with expiration found!",
+            "Add Item": "Item name",
+      "Add": "Add",
+      "info": "Click an Item to Delete",
+      "Quantity": "Quantity",
+      "Select Item": "Select Item",
+      "Remove Item Quantity": "n°",
+      "Remove Partial": "Remove",
+      "Remove All": "Remove All",
+      "Undo Remove": "Undo Remove",
         },
       };
 
@@ -207,6 +384,94 @@
       document.addEventListener("DOMContentLoaded", () => {
         applyTranslations();
       });
+
+  function loadStorageItems() {
+    const storageItems = JSON.parse(localStorage.getItem("storageItems")) || [];
+    const tableBody = document.getElementById("storageTableBody");
+    if (!tableBody) return;
+    tableBody.innerHTML = "";
+
+    storageItems.forEach(item => {
+      const tr = document.createElement("tr");
+      tr.classList.add("clickable-row");
+
+      const nameTd = document.createElement("td");
+      nameTd.textContent = item.name;
+
+      const quantityTd = document.createElement("td");
+      quantityTd.textContent = item.quantity;
+
+      tr.appendChild(nameTd);
+      tr.appendChild(quantityTd);
+      tableBody.appendChild(tr);
+
+      tr.addEventListener("click", () => {
+        document.getElementById("removeItemName").value = item.name;
+        document.getElementById("removeItemQuantity").focus();
+      });
+    });
+  }
+
+  function saveStorageItems(items) {
+    localStorage.setItem("storageItems", JSON.stringify(items));
+  }
+
+  // Aggiunta
+  document.getElementById("addStorageForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const name = document.getElementById("manualItemName").value.trim();
+    const quantity = parseInt(document.getElementById("manualItemQuantity").value);
+
+    if (!name || quantity <= 0) return;
+
+    const items = JSON.parse(localStorage.getItem("storageItems")) || [];
+    const existing = items.find(item => item.name.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      items.push({ name, quantity });
+    }
+
+    saveStorageItems(items);
+    loadStorageItems();
+
+    document.getElementById("manualItemName").value = "";
+    document.getElementById("manualItemQuantity").value = "";
+  });
+
+  // Rimozione quantità
+  document.getElementById("removeStorageForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const name = document.getElementById("removeItemName").value.trim();
+    const quantity = parseInt(document.getElementById("removeItemQuantity").value);
+
+    if (!name || quantity <= 0) return;
+
+    const items = JSON.parse(localStorage.getItem("storageItems")) || [];
+    const index = items.findIndex(item => item.name.toLowerCase() === name.toLowerCase());
+
+    if (index >= 0) {
+      items[index].quantity -= quantity;
+      if (items[index].quantity <= 0) {
+        items.splice(index, 1);
+      }
+      saveStorageItems(items);
+      loadStorageItems();
+    }
+  });
+
+  document.getElementById("removeAllBtn").addEventListener("click", () => {
+    const name = document.getElementById("removeItemName").value.trim();
+    if (!name) return;
+
+    const items = JSON.parse(localStorage.getItem("storageItems")) || [];
+    const updated = items.filter(item => item.name.toLowerCase() !== name.toLowerCase());
+
+    saveStorageItems(updated);
+    loadStorageItems();
+  });
+
+  window.addEventListener("DOMContentLoaded", loadStorageItems);
     </script>
   </body>
 </html>

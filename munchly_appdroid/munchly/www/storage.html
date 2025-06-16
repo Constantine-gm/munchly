@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <script src="https://kit.fontawesome.com/6bfa7fc6c3.js" crossorigin="anonymous"></script>
 
   <title>Storage Prodotti</title>
   <style>
@@ -105,6 +106,14 @@ tr.clickable-row:hover {
 }
 #removeAllBtn {
   padding:14px;
+  background-color: #e12222;
+}
+#undoBtn {
+  background-color: #e12222;
+  width:50px;
+  padding:6px;
+  color:white;
+  font-family: 2em;
 }
 
 
@@ -236,12 +245,12 @@ tr.clickable-row:hover {
 <input type="number" id="removeItemQuantity" placeholder="n°" min="1" data-translate-key="Remove Item Quantity" />
 <button type="submit" id="removePartialBtn" data-translate-key="Remove Partial">Elimina Quantità</button>
 <button type="button" id="removeAllBtn" data-translate-key="Remove All">Elimina Tutto</button>
-<button type="button" id="undoBtn" disabled data-translate-key="Undo Remove">Annulla Eliminazione</button>
+<button type="button" id="undoBtn" disabled ><i class="fa-solid fa-arrow-rotate-left"></i></button>
 
 </form>
 
 
-<button class="back" id="goBackBtn">Torna alla Lista da Comprare</button>
+<button class="back" id="goBackBtn" data-translate-key="goBackBtn">Torna alla Lista da Comprare</button>
 
 
   <script>
@@ -325,6 +334,7 @@ tr.clickable-row:hover {
     "Remove Partial": "Elimina Quantità",
     "Remove All": "Elimina Tutto",
     "Undo Remove": "Annulla Eliminazione",
+    goBackBtn: 'Torna alla Home',
     },
     en: {
       "Add Item": "Item name",
@@ -340,6 +350,7 @@ tr.clickable-row:hover {
     "Remove Partial": "Remove Quantity",
     "Remove All": "Remove All",
     "Undo Remove": "Undo Remove",
+    goBackBtn: 'Back to Home',
     },
   };
 

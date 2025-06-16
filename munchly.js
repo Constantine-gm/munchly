@@ -386,17 +386,35 @@ let itemNameToAdd = "";
 
 // Funzione per mostrare la modale con checkbox
 function showPriorityAlert(itemName) {
-  itemNameToAdd = itemName; // Memorizza l'elemento per cui selezioniamo la priorità
-  // Resetta lo stato delle checkbox ogni volta che si apre la modale
+  itemNameToAdd = itemName;
+
+  // 🔁 Applica la traduzione ogni volta che la modale viene mostrata
+  updatePriorityModalText();
+
+  // Reset checkbox
   document.getElementById("highPriority").checked = false;
   document.getElementById("mediumPriority").checked = false;
-  document.getElementById("priorityModal").style.display = "block"; // Mostra la modale
+
+  // Mostra la modale
+  document.getElementById("priorityModal").style.display = "block";
 }
+function updatePriorityModalText() {
+  const elements = document.querySelectorAll('#priorityModal [data-translate-key]');
+  elements.forEach(el => {
+    const key = el.getAttribute('data-translate-key');
+    const translation = translations[currentLanguage]?.[key];
+    if (translation) {
+      el.textContent = translation;
+    }
+  });
+}
+
 
 // Funzione per chiudere la modale
 function closePriorityModal() {
   document.getElementById("priorityModal").style.display = "none"; // Nascondi la modale
 }
+
 
 // Funzione per confermare la priorità
 function confirmPriority() {
@@ -417,6 +435,7 @@ function confirmPriority() {
 
   closePriorityModal(); // Chiudi la modale
 }
+
 
 // Funzione per aggiungere un elemento alla lista "To Buy" con la priorità
 function addItemToBuyListWithPriority(itemName, priority) {
@@ -487,7 +506,7 @@ function loadBuyItems() {
     const tr = document.createElement("tr");
     const nameTd = document.createElement("td");
 
-    // Se la priorità è alta o media, aggiungi il pallino a sinistra del testo
+     // Se la priorità è alta o media, aggiungi il pallino a sinistra del testo
     if (item.priority !== "none") {
       const prioritySpan = document.createElement("span");
       if (item.priority === "high") {
@@ -499,6 +518,7 @@ function loadBuyItems() {
       }
       nameTd.appendChild(prioritySpan); // Aggiungi il pallino prima del testo
     }
+    
 
     nameTd.appendChild(document.createTextNode(item.name)); // Aggiungi il nome dell'oggetto
     tr.appendChild(nameTd);
@@ -545,32 +565,62 @@ function moveToStorage(index) {
 
   const item = savedBuyItems[index];
 
-  // Chiedi quantità tramite prompt
-  let quantity = prompt(`Inserisci la quantità acquistata per "${item.name}":`, "1");
-  if (quantity === null) return; // Se annulla
-  quantity = parseInt(quantity);
-  if (isNaN(quantity) || quantity <= 0) {
-    alert("Quantità non valida");
-    return;
+  // Mostra il modal
+  const modal = document.getElementById("quantityModal");
+  const modalText = document.getElementById("modalText");
+  const quantityInput = document.getElementById("quantityInput");
+  const confirmBtn = document.getElementById("confirmBtn");
+  const cancelBtn = document.getElementById("cancelBtn");
+  confirmBtn.textContent = translations[currentLanguage].confirm;
+cancelBtn.textContent = translations[currentLanguage].cancel;
+
+
+modalText.textContent = translations[currentLanguage].insertQuantity(item.name);
+
+  quantityInput.value = 1;
+  modal.style.display = "flex";
+
+  // Funzione per chiudere il modal
+  function closeModal() {
+    modal.style.display = "none";
+    confirmBtn.removeEventListener("click", onConfirm);
+    cancelBtn.removeEventListener("click", onCancel);
   }
 
-  // Controlla se esiste già in storage e somma la quantità
-  const existing = storageList.find(i => i.name.toLowerCase() === item.name.toLowerCase());
-  if (existing) {
-    existing.quantity += quantity;
-  } else {
-    storageList.push({ name: item.name, quantity: quantity });
+  function onConfirm() {
+    let quantity = parseInt(quantityInput.value);
+    if (isNaN(quantity) || quantity <= 0) {
+      alert(translations[currentLanguage].invalidQuantity);
+
+      return;
+    }
+
+    // Aggiorna storage
+    const existing = storageList.find(i => i.name.toLowerCase() === item.name.toLowerCase());
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      storageList.push({ name: item.name, quantity: quantity });
+    }
+
+    localStorage.setItem("storageItems", JSON.stringify(storageList));
+
+    // Rimuovi da lista To Buy
+    savedBuyItems.splice(index, 1);
+    localStorage.setItem("buyItems", JSON.stringify(savedBuyItems));
+
+    loadBuyItems();
+    updateTotals?.();
+
+    closeModal();
   }
 
-  // Salva storage aggiornato
-  localStorage.setItem("storageItems", JSON.stringify(storageList));
+  function onCancel() {
+    closeModal();
+  }
 
-  // Rimuovi da lista To Buy
-  savedBuyItems.splice(index, 1);
-  localStorage.setItem("buyItems", JSON.stringify(savedBuyItems));
-
-  loadBuyItems();
-  updateTotals?.();
+  confirmBtn.addEventListener("click", onConfirm);
+  cancelBtn.addEventListener("click", onCancel);
 }
 
 // Rimuove l'errore di input quando l'utente interagisce con l'input
@@ -700,6 +750,8 @@ function addItemToBuyList(itemName) {
 }
 const translations = {
   it: {
+    insertQuantity: (itemName) => `Inserisci quantità "${itemName}":`,
+  invalidQuantity: "Quantità non valida",
     "Dark Mode": "Modalità Scura",
     "Color Picker": "Selettore Colore",
     "Change Color": "Cambia Colore",
@@ -737,9 +789,11 @@ const translations = {
     confirm: "Conferma",
     cancel: "Cancella",
     high: "Alta (🔴)",
-    "medium ": "Media (🟡)",
+    "medium": "Media (🟡)",
   },
   en: {
+     insertQuantity: (itemName) => `Enter quantity for "${itemName}":`,
+  invalidQuantity: "Invalid quantity",
     "Dark Mode": "Dark Mode",
     "Color Picker": "Color Picker",
     "Change Color": "Change Color",
@@ -775,7 +829,7 @@ const translations = {
     confirm: "Confirm",
     cancel: "Cancel",
     high: "High (🔴)",
-    "medium ": "Medium (🟡)",
+    "medium": "Medium (🟡)",
   },
 };
 // Definisci le lingue supportate
