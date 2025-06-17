@@ -1,0 +1,11 @@
+{
+  "android": {
+    "release": {
+      "keystore": "my-release-key.keystore",
+      "storePassword": "Constantine-13",
+      "alias": "Constantine",
+      "password" : "Constantine-13",
+      "keystoreType": ""
+    }
+  }
+}
