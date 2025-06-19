@@ -48,12 +48,14 @@
             },
             "cordova-plugin-android-permissions": {},
             "cordova-plugin-inappbrowser": {},
-            "cordova-plugin-device": {}
+            "cordova-plugin-device": {},
+            "cordova-plugin-camera": {}
         }
     },
     "devDependencies": {
         "cordova-android": "^14.0.1",
         "cordova-plugin-android-permissions": "^1.1.5",
+        "cordova-plugin-camera": "^8.0.0",
         "cordova-plugin-device": "^3.0.0",
         "cordova-plugin-file": "^8.1.3",
         "cordova-plugin-inappbrowser": "^6.0.0",

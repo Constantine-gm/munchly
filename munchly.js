@@ -678,41 +678,61 @@ function loadSuggestions() {
   const suggestionList = document.getElementById("suggestionList");
   suggestionList.innerHTML = ""; // Pulisce la lista
 
-  // Ottieni gli oggetti suggeriti nella lingua corrente
   const defaultSuggestions = defaultSuggestionsByLanguage[currentLanguage];
-  const suggestedItems = new Set(savedBuyItems.map((item) => item.name)); // Set di oggetti già acquistati
+  const suggestedItems = new Set(savedBuyItems.map(item => item.name || item)); // supporta oggetti o stringhe
 
-  // Funzione per generare una mappa delle frequenze per gli oggetti salvati
   function generateFrequencyMap(savedObjects) {
     const frequencyMap = new Map();
-    savedObjects.forEach((obj) => {
-      frequencyMap.set(
-        obj.name,
-        (frequencyMap.get(obj.name) || 0) + obj.quantity
-      );
+    savedObjects.forEach(obj => {
+      frequencyMap.set(obj.name, (frequencyMap.get(obj.name) || 0) + obj.quantity);
     });
     return frequencyMap;
   }
 
-  // Mappa delle frequenze per gli oggetti salvati
   const frequencyMap = generateFrequencyMap(savedObjects);
 
-  // Ordina gli oggetti per frequenza in ordine decrescente
-  const sortedItems = Array.from(frequencyMap.entries())
-    .sort((a, b) => b[1] - a[1]) // Ordina per quantità (valore della mappa)
-    .map((entry) => entry[0]); // Estrai solo i nomi degli oggetti
+  // Prendi tutti i prodotti salvati (nomi) in un array
+  let allItems = Array.from(frequencyMap.keys());
 
-  // Aggiungi gli oggetti ordinati per frequenza prima, poi i suggerimenti di default, se necessario
+  // Mescola la lista per variare la selezione
+  shuffleArray(allItems);
+
   let suggestionCount = 0;
-  sortedItems.concat(defaultSuggestions).forEach((itemName) => {
-    if (suggestionCount >= 7) return; // Ferma dopo 7 oggetti
+  const maxSuggestions = 7;
+  const usedSuggestions = new Set();
 
-    if (!suggestedItems.has(itemName)) {
+  // Prendi fino a maxSuggestions prodotti non ancora acquistati
+  for (let i = 0; i < allItems.length && suggestionCount < maxSuggestions; i++) {
+    const itemName = allItems[i];
+    if (!suggestedItems.has(itemName) && !usedSuggestions.has(itemName)) {
       createSuggestionItem(itemName, suggestionList);
-      suggestedItems.add(itemName);
+      usedSuggestions.add(itemName);
       suggestionCount++;
     }
-  });
+  }
+
+  // Se non abbiamo raggiunto maxSuggestions, aggiungiamo dai suggerimenti di default mescolati
+  if (suggestionCount < maxSuggestions) {
+    let shuffledDefaults = [...defaultSuggestions];
+    shuffleArray(shuffledDefaults);
+
+    for (let itemName of shuffledDefaults) {
+      if (suggestionCount >= maxSuggestions) break;
+      if (!suggestedItems.has(itemName) && !usedSuggestions.has(itemName)) {
+        createSuggestionItem(itemName, suggestionList);
+        usedSuggestions.add(itemName);
+        suggestionCount++;
+      }
+    }
+  }
+}
+
+// Funzione per mescolare array (Fisher-Yates shuffle)
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 }
 
 // Function to load saved objects and buy items from localStorage
@@ -729,7 +749,9 @@ function createSuggestionItem(itemName, suggestionList) {
 
   const addBtn = document.createElement("button");
   addBtn.textContent = currentLanguage === "it" ? "Aggiungi" : "Add";
-
+    // Aggiungo una classe CSS personalizzata
+  addBtn.classList.add("addBtn");
+  
   addBtn.onclick = () => {
     // Mostra la modale per la selezione della priorità
     showPriorityAlert(itemName);
@@ -790,6 +812,7 @@ const translations = {
     cancel: "Cancella",
     high: "Alta (🔴)",
     "medium": "Media (🟡)",
+
   },
   en: {
      insertQuantity: (itemName) => `Enter quantity for "${itemName}":`,

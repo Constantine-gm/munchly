@@ -19,6 +19,9 @@
     h2 {
       color: #2c3e50;
     }
+    #highPriorityTitle, #mediumPriorityTitle, #nonePriorityTitle {
+      font-weight: bold;
+    }
     .flex-wrapper {
   display: flex;
   gap: 10px; 
@@ -57,7 +60,7 @@ width:600px;
     }
     button {
       margin: 3px;
-      padding: 8px;
+      padding: 4px 3px;
       font-size: 1rem;
       cursor: pointer;
       background-color: #4caf50;
@@ -65,8 +68,7 @@ width:600px;
       text-shadow: 0px 0px 2.5px #333;
       border: none;
       border-radius: 2px;
-      width: 110px;
-      max-width: 250px;
+      width: 80px;
     }
     /* Stilizzazione per nascondere le sezioni vuote */
     .priority-section {
@@ -92,6 +94,7 @@ width:600px;
 #removeAllBtn {
   padding:6px;
   background-color: #e12222;
+  width:120px;
 }
 #undoBtn {
   background-color: #e12222;
@@ -147,16 +150,24 @@ margin-top:10px;
 
   #objectsList,
   #buyItemsList {
-    width: 100%;
+    width: 90%;
+
   }
   #addStorageForm input {
     width:25%;
   }
   #removeStorageForm input {
     width:20%;
+    
   }
   .backk {
     margin-top:50px;
+    
+  }
+  .storagetable {
+   width:100%;
+   border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
 }
 
@@ -171,7 +182,7 @@ margin-top:10px;
     <h2 data-translate-key="Shopping List">Shopping List:</h2>
     <div id="buyItemsList">
       <!-- Sezioni della lista della spesa -->
-      <p id="highPriorityTitle" data-translate-key="high">High Priority (🔴)</p>
+      <p id="highPriorityTitle" data-translate-key="high">High Priority 🔴</p>
       <pre id="highPriorityItems" class="priority-section"></pre>
 
       <p id="mediumPriorityTitle" data-translate-key="medium">
@@ -190,8 +201,9 @@ margin-top:10px;
 
   <form id="addStorageForm">
     <input data-translate-key="Add Item" type="text" id="manualItemName" placeholder="Nome oggetto" required>
-    <input type="number" id="manualItemQuantity"  data-translate-key="Quantity" placeholder="Quantità" min="1" required>
+    <input type="number" id="manualItemQuantity" style="width:15%;" data-translate-key="Quantity" placeholder="Quantità" min="1" required>
     <button type="submit" data-translate-key="Add">Aggiungi</button>
+    <button type="button" id="undoBtn" disabled ><i class="fa-solid fa-arrow-rotate-left"></i></button>
   </form>
 
   <table class="storagetable">
@@ -208,10 +220,9 @@ margin-top:10px;
 
   <form id="removeStorageForm">
   <input type="text" id="removeItemName" placeholder="Select Item" required data-translate-key="Select Item" />
-<input type="number" id="removeItemQuantity" placeholder="n°" min="1" data-translate-key="Remove Item Quantity" />
+<input type="number" id="removeItemQuantity" style="width:7%;" placeholder="n°" min="1" data-translate-key="Remove Item Quantity" />
 <button type="submit" id="removePartialBtn" data-translate-key="Remove Partial">Elimina</button>
 <button type="button" id="removeAllBtn" data-translate-key="Remove All">Elimina Tutto</button>
-<button type="button" id="undoBtn" disabled ><i class="fa-solid fa-arrow-rotate-left"></i></button>
 
 </form>
 
@@ -239,8 +250,8 @@ margin-top:10px;
           "View Lists": "Visualizza le Liste",
           Inventory: "Inventario",
           "Shopping List": "Lista della Spesa",
-          high: "Alta Priorità (🔴)",
-          medium: "Priorità Media (🟡)",
+          high: "🔴 Alta Priorità ",
+          medium: "🟡 Priorità Media ",
           none: "Altri",
           Back: "Indietro",
           "No items to buy!": "Nessun articolo da comprare!",
@@ -260,8 +271,8 @@ margin-top:10px;
           "View Lists": "View Lists",
           Inventory: "Inventory",
           "Shopping List": "Shopping List",
-          high: "High Priority (🔴)",
-          medium: "Medium Priority (🟡)",
+          high: "🔴 High Priority ",
+          medium: "🟡 Medium Priority",
           none: "No Priority",
           Back: "Back",
           "No items to buy!": "No items to buy!",

@@ -88,12 +88,12 @@
 </div>
 
 </header>
-<body>
+<body>  
 <div class="exp">
-    <input type="text" id="objectName" placeholder="Add Item" data-translate-key="Add Item"/>
-    <label for="expirydate" style="display:none;"></label><input type="date" id="expiryDate"/>
-    <label for="quantity" style="display:none;"></label><input type="number" id="quantity" value="1" min="1">
-    <button onclick="addObject()" data-translate-key="Add">Add</button>
+  <input type="text" id="objectName" placeholder="Add Item" data-translate-key="Add Item"/>
+  <input type="date" id="expiryDate"/>
+  <input type="number" id="quantity" value="1" min="1">
+  <button onclick="addObject()" data-translate-key="Add">Add</button>
 </div>
 
     <div class="line"></div>
@@ -156,16 +156,16 @@
   <div class="modal-content">
     <h2 data-translate-key="select priority">Select Priority</h2>
    <label>
-      <input type="checkbox" id="highPriority">
+      <input type="checkbox" style="accent-color: red;" id="highPriority">
       <span data-translate-key="high">Alta (🔴)</span>
     </label><br>
 
     <label>
-      <input type="checkbox" id="mediumPriority">
+      <input type="checkbox" id="mediumPriority" style="accent-color: orange;">
       <span data-translate-key="medium">Media (🟡)</span>
     </label><br>
     <button onclick="confirmPriority()" data-translate-key="confirm">Confirm</button>
-    <button onclick="closePriorityModal()" data-translate-key="cancel">Cancel</button>
+    <button onclick="closePriorityModal()" style="background-color: rgb(201, 21, 21);" data-translate-key="cancel">Cancel</button>
   </div>
 </div>
 
